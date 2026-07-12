@@ -140,3 +140,49 @@ def test_init_refuses_to_overwrite_either_config(tmp_path):
     assert rc == 2
     assert not profile.exists()
     assert sources.read_text(encoding="utf-8") == "keep me"
+
+
+def test_explain_json_reports_score_contributions_without_creating_database(tmp_path, capsys):
+    root = Path(__file__).resolve().parents[1]
+    database = tmp_path / "must-not-exist.db"
+    rc = main([
+        "--db", str(database),
+        "--profile", str(root / "src/bid_intel/profiles/education.json"),
+        "explain",
+        "--title", "Campus smart classroom upgrade",
+        "--buyer", "Example University",
+        "--content", "Learning platform, lecture capture, and interactive displays",
+        "--stage", "tender notice",
+        "--region", "Example Region",
+        "--budget-cny", "2000000",
+        "--published-at", "2026-07-12",
+        "--deadline-at", "2026-07-20",
+        "--as-of", "2026-07-13",
+        "--json",
+    ])
+    assert rc == 0
+    assert not database.exists()
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["score"] == sum(item["points"] for item in payload["contributions"])
+    assert "Education technology and digital learning" in payload["business_lines"]
+    categories = {item["category"] for item in payload["contributions"]}
+    assert {"stage", "region", "budget", "recency", "deadline"} <= categories
+
+
+def test_explain_text_and_invalid_date_handling(tmp_path, capsys):
+    root = Path(__file__).resolve().parents[1]
+    profile = str(root / "src/bid_intel/profiles/education.json")
+    assert main([
+        "--profile", profile, "explain",
+        "--title", "Laboratory equipment procurement",
+        "--content", "scientific instrument and laboratory equipment",
+    ]) == 0
+    output = capsys.readouterr().out
+    assert "Score contributions:" in output
+    assert "Recommended actions:" in output
+
+    assert main([
+        "--profile", profile, "explain",
+        "--title", "Example", "--published-at", "not-a-date",
+    ]) == 2
+    assert "--published-at must be an ISO date" in capsys.readouterr().err

@@ -17,11 +17,16 @@ def test_store_deduplicates_by_url(tmp_path):
 def test_rank_and_feedback(tmp_path):
     store = Store(tmp_path / "bids.db")
     notice_id, _ = store.upsert_notice(Notice(title="项目", url="u", source="s", published_at="2026-01-01"))
-    score = ScoreResult(88, "重点", ["仿真"], ["电磁仿真"], [], [], [], ["核心匹配"], [], ["跟进"])
+    score = ScoreResult(88, "重点", ["仿真"], ["电磁仿真"], [], [], [], ["核心匹配"], [], ["跟进"],
+        contributions=[{"category": "business_line", "label": "simulation", "points": 88}],
+    )
     store.save_score(notice_id, score)
     store.add_feedback(notice_id, "已跟进", "联系代理")
     rows = store.ranked()
     assert rows[0]["score"] == 88
+    assert rows[0]["result"]["contributions"] == [
+        {"category": "business_line", "label": "simulation", "points": 88}
+    ]
     assert rows[0]["latest_verdict"] == "已跟进"
 
 

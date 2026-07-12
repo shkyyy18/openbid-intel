@@ -4,6 +4,16 @@ All notable changes to OpenBid Intel are documented here.
 
 ## [Unreleased]
 
+### Added
+
+- `openbid explain` with text and JSON score-contribution output for testing a notice without writing to SQLite.
+- Structured score contributions for business-line evidence, buyer terms, stage, region, priority accounts, budget, recency, deadlines, and score caps.
+
+### Changed
+
+- Added deterministic publication-recency scoring and clearer missing-budget or missing-deadline risks.
+- Improved near-deadline recommended actions to focus on response feasibility.
+
 ## [0.4.0] - 2026-07-12
 
 ### Added

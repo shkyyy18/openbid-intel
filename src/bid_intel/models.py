@@ -61,6 +61,7 @@ class ScoreResult:
     priority_account_hits: list[str] = field(default_factory=list)
     region_match: bool = False
     budget_status: str = ""
+    contributions: list[dict[str, Any]] = field(default_factory=list)
 
 
 def _optional_text(value: Any) -> str | None:

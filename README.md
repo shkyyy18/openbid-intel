@@ -102,6 +102,25 @@ openbid --profile config/profile.local.json validate-config --only profile
 
 Validation reports exact JSON paths, missing required fields, invalid types and ranges, empty required arrays or strings, and duplicate business-line or source IDs before collection or scoring begins.
 
+## Explain a score before importing
+
+Test profile terms and scoring behavior without creating or writing a SQLite database:
+
+```bash
+openbid --profile config/profile.local.json explain \
+  --title "Campus smart classroom upgrade" \
+  --buyer "Example University" \
+  --content "Learning platform, lecture capture, and interactive displays" \
+  --stage "tender notice" \
+  --region "Example Region" \
+  --budget-cny 2000000 \
+  --published-at 2026-07-12 \
+  --deadline-at 2026-07-20 \
+  --as-of 2026-07-13
+```
+
+The output shows each positive, negative, and zero-point contribution, including business-line evidence, buyer terms, stage, region, budget, publication recency, and deadline timing. The contribution points reconcile exactly to the final capped 0-100 score. Add `--json` for a stable machine-readable form suitable for tests, editors, or profile-authoring tools. `--as-of` makes time-based results reproducible.
+
 ## Import from any export
 
 OpenBid Intel accepts a top-level JSON array, JSON objects containing `notices`, `items`, or `results`, JSONL, and CSV. It recognizes common source headers automatically.
@@ -139,6 +158,7 @@ Amount parsing handles values such as `$1.25 million`, `1.2 billion`, `CNY 1.25 
 | Create an editable profile | `openbid init-profile it-digital` | Private local JSON configuration |
 | Import exports | `openbid import notices.csv --score` | Normalized and deduplicated records |
 | Collect configured public pages | `openbid collect --score` | New notices and collection run log |
+| Test a sample against a profile | `openbid explain --title "Example RFP"` | Score contribution breakdown without database writes |
 | Score against your profile | `openbid score --all` | 0-100 scores, reasons, risks, actions |
 | Generate an opportunity digest | `openbid digest --min-score 50` | Markdown or terminal report |
 | Generate an HTML dashboard | `openbid dashboard --min-score 50` | Interactive, self-contained HTML |

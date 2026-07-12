@@ -24,6 +24,7 @@ REQUIRED_PATHS = (
     "src/bid_intel/connectors.py",
     "src/bid_intel/config_validation.py",
     "src/bid_intel/exports.py",
+    "src/bid_intel/explain.py",
     "src/bid_intel/onboarding.py",
     "schemas/profile.schema.json",
     "schemas/sources.schema.json",

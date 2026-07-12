@@ -109,3 +109,29 @@ def test_exact_budget_threshold_qualifies():
 def test_783_alias_matches_priority_account():
     result = Matcher(sales_profile()).score(make_notice(buyer="\u7ef5\u9633\u793a\u4f8b\u5b9e\u9a8c\u5ba4", region="\u56db\u5ddd"))
     assert result.priority_account_hits == ["\u793a\u4f8b\u5b9e\u9a8c\u5ba4"]
+
+
+def test_score_contributions_reconcile_and_include_time_signals():
+    notice = make_notice(
+        published_at="2026-07-12T00:00:00+08:00",
+        deadline_at="2026-07-20T00:00:00+08:00",
+        stage="\u62db\u6807\u516c\u544a",
+        region="\u56db\u5ddd",
+    )
+    result = Matcher(sales_profile()).score(
+        notice, now=datetime.fromisoformat("2026-07-13T00:00:00+08:00")
+    )
+    assert sum(item["points"] for item in result.contributions) == result.score
+    categories = {item["category"] for item in result.contributions}
+    assert {"business_line", "stage", "region", "budget", "recency", "deadline"} <= categories
+    assert next(item for item in result.contributions if item["category"] == "recency")["points"] == 5
+
+
+def test_old_publication_receives_recency_penalty():
+    result = Matcher(profile()).score(
+        make_notice(published_at="2025-01-01", deadline_at=None),
+        now=datetime.fromisoformat("2026-07-13T00:00:00+08:00"),
+    )
+    recency = next(item for item in result.contributions if item["category"] == "recency")
+    assert recency["points"] == -5
+    assert sum(item["points"] for item in result.contributions) == result.score

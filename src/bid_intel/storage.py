@@ -115,6 +115,7 @@ class Store:
             "region_match": result.region_match, "budget_status": result.budget_status,
             "reasons": result.reasons, "risks": result.risks,
             "recommended_actions": result.recommended_actions,
+            "contributions": result.contributions,
         }
         with self.connect() as connection:
             connection.execute(

@@ -21,6 +21,16 @@ class Matcher:
     def score(self, notice: Notice, now: datetime | None = None) -> ScoreResult:
         text = notice.searchable_text()
         score = 0
+        contributions: list[dict[str, Any]] = []
+
+        def add(category: str, label: str, points: int, details: str = "") -> None:
+            nonlocal score
+            score += points
+            contribution: dict[str, Any] = {"category": category, "label": label, "points": points}
+            if details:
+                contribution["details"] = details
+            contributions.append(contribution)
+
         strong_hits: list[str] = []
         related_hits: list[str] = []
         line_hits: list[tuple[str, int, list[str], list[str]]] = []
@@ -41,29 +51,45 @@ class Matcher:
 
         if line_hits:
             line_hits.sort(key=lambda item: item[1], reverse=True)
-            score += line_hits[0][1]
-            score += min(18, sum(item[1] for item in line_hits[1:]) // 3)
-            if len(line_hits[0][2]) >= 1 and len(line_hits[0][3]) >= 2:
-                score += 12
-            if len(line_hits[0][2]) >= 2:
-                score += 8
+            primary = line_hits[0]
+            add("business_line", primary[0], primary[1], _term_details(primary[2], primary[3]))
+            secondary_points = min(18, sum(item[1] for item in line_hits[1:]) // 3)
+            if secondary_points:
+                add(
+                    "business_line_overlap", "Additional matched business lines", secondary_points,
+                    ", ".join(item[0] for item in line_hits[1:]),
+                )
+            if len(primary[2]) >= 1 and len(primary[3]) >= 2:
+                add("evidence_bonus", "Strong and supporting evidence", 12)
+            if len(primary[2]) >= 2:
+                add("evidence_bonus", "Multiple strong terms", 8)
 
         buyer_hits = _hits(text, self.profile.get("buyer_terms", []))
-        score += min(12, 3 * len(buyer_hits))
+        buyer_points = min(12, 3 * len(buyer_hits))
+        if buyer_points:
+            add("buyer", "Buyer-category terms", buyer_points, ", ".join(_unique(buyer_hits)))
         stage_weight = int(self.profile.get("stage_weights", {}).get(notice.stage, 0))
-        score += stage_weight
+        if notice.stage:
+            add("stage", notice.stage, stage_weight)
         procurement_hits = _hits(text, self.profile.get("procurement_terms", []))
-        score += min(5, len(procurement_hits))
+        procurement_points = min(5, len(procurement_hits))
+        if procurement_points:
+            add("procurement", "Procurement language", procurement_points, ", ".join(_unique(procurement_hits)))
         negative_hits = _hits(text, self.profile.get("negative_terms", []))
-        score -= min(60, 18 * len(negative_hits))
+        negative_points = -min(60, 18 * len(negative_hits))
+        if negative_points:
+            add("negative_terms", "Excluded or noisy terms", negative_points, ", ".join(_unique(negative_hits)))
 
         sales_profile = self.profile.get("sales_profile", {})
         region_terms = sales_profile.get("focus_regions", self.profile.get("focus_regions", []))
         region_text = " ".join((notice.region, notice.buyer, notice.title, notice.content)).lower()
         matched_regions = _hits(region_text, region_terms)
         region_match = bool(matched_regions)
-        if region_match:
-            score += 10
+        if notice.region or region_terms:
+            add(
+                "region", "Focus-region match", 10 if region_match else 0,
+                ", ".join(_unique(matched_regions)) if matched_regions else "No configured focus region matched",
+            )
 
         priority_account_hits: list[str] = []
         priority_alias_hits: list[str] = []
@@ -72,12 +98,13 @@ class Matcher:
             aliases = _hits(account_text, account.get("aliases", []))
             if not aliases:
                 continue
-            priority_account_hits.append(str(account.get("name", aliases[0])))
+            account_name = str(account.get("name", aliases[0]))
+            priority_account_hits.append(account_name)
             priority_alias_hits.extend(aliases)
-            score += int(account.get("weight", 25))
+            add("priority_account", account_name, int(account.get("weight", 25)), ", ".join(aliases))
         priority_account_hits = _unique(priority_account_hits)
         if len(priority_account_hits) > 1:
-            score -= 10 * (len(priority_account_hits) - 1)
+            add("priority_account_overlap", "Multiple priority accounts matched", -10 * (len(priority_account_hits) - 1))
 
         threshold = float(sales_profile.get(
             "minimum_followup_budget_cny", self.profile.get("min_budget_cny", 0)
@@ -92,43 +119,80 @@ class Matcher:
                 actions.append("\u4f18\u5148\u67e5\u770b\u516c\u544a\u9644\u4ef6\uff0c\u786e\u8ba4\u9879\u76ee\u9884\u7b97\u6216\u6700\u9ad8\u9650\u4ef7")
             elif notice.budget_cny < threshold:
                 budget_status = f"\u4f4e\u4e8e{_money_wan(threshold)}\u4e07\u5143\u8ddf\u8fdb\u95e8\u69db"
-                score -= 25
+                add("budget", "Below follow-up threshold", -25, budget_status)
                 risks.append(f"\u5df2\u77e5\u9884\u7b97\u4f4e\u4e8e{_money_wan(threshold)}\u4e07\u5143\u6700\u4f4e\u8ddf\u8fdb\u95e8\u69db")
             else:
                 budget_status = f"\u8fbe\u5230{_money_wan(threshold)}\u4e07\u5143\u8ddf\u8fdb\u95e8\u69db"
-                score += min(8, max(5, int(math.log10(max(notice.budget_cny, 10))) - 1))
+                add(
+                    "budget", "Meets follow-up threshold",
+                    min(8, max(5, int(math.log10(max(notice.budget_cny, 10))) - 1)), budget_status,
+                )
         elif notice.budget_cny is not None:
             budget_status = "\u9884\u7b97\u5df2\u77e5"
-            score += min(8, max(1, int(math.log10(max(notice.budget_cny, 10))) - 4))
+            add(
+                "budget", "Known budget",
+                min(8, max(1, int(math.log10(max(notice.budget_cny, 10))) - 4)),
+                f"CNY {notice.budget_cny:,.0f}",
+            )
+
+        reference = now or datetime.now().astimezone()
+        published = parse_datetime(notice.published_at)
+        if published:
+            published, comparable_reference = _comparable_datetimes(published, reference)
+            age_days = (comparable_reference - published).total_seconds() / 86400
+            if age_days < -1:
+                recency_points = 0
+                recency_detail = f"Publication date is {abs(age_days):.1f} days after the as-of time"
+            elif age_days <= 7:
+                recency_points = 5
+                recency_detail = f"Published {max(0.0, age_days):.1f} days ago"
+            elif age_days <= 30:
+                recency_points = 2
+                recency_detail = f"Published {age_days:.1f} days ago"
+            elif age_days > 180:
+                recency_points = -5
+                recency_detail = f"Published {age_days:.1f} days ago"
+            else:
+                recency_points = 0
+                recency_detail = f"Published {age_days:.1f} days ago"
+            add("recency", "Publication recency", recency_points, recency_detail)
+        elif notice.published_at:
+            add("recency", "Publication recency", 0, "Unrecognized publication date")
 
         deadline = parse_datetime(notice.deadline_at)
-        reference = now or datetime.now().astimezone()
         if deadline:
-            if deadline.tzinfo is None and reference.tzinfo is not None:
-                deadline = deadline.replace(tzinfo=reference.tzinfo)
-            days = (deadline - reference).total_seconds() / 86400
+            deadline, comparable_reference = _comparable_datetimes(deadline, reference)
+            days = (deadline - comparable_reference).total_seconds() / 86400
             if days < -30:
-                score = 0
+                add("deadline", "Deadline passed more than 30 days ago", -score, f"{abs(days):.1f} days past deadline")
                 risks.append("\u9879\u76ee\u5df2\u622a\u6b62\u8d85\u8fc7 30 \u5929\uff0c\u4ec5\u4f5c\u5386\u53f2\u60c5\u62a5")
             elif days < 0:
-                score -= 30
+                add("deadline", "Deadline has passed", -30, f"{abs(days):.1f} days past deadline")
                 risks.append("\u622a\u6b62\u65f6\u95f4\u5df2\u8fc7")
             elif days <= 3:
-                score -= 8
+                add("deadline", "Deadline is very close", -8, f"{days:.1f} days remaining")
                 risks.append(f"\u8ddd\u622a\u6b62\u4e0d\u8db3 {math.ceil(days)} \u5929\uff0c\u54cd\u5e94\u65f6\u95f4\u7d27")
                 actions.append("\u8c03\u67e5\u91c7\u8d2d\u5355\u4f4d\u5386\u53f2\u540c\u7c7b\u9879\u76ee\u53ca\u4e2d\u6807\u65b9")
             elif days <= 10:
+                add("deadline", "Deadline is approaching", 0, f"{days:.1f} days remaining")
                 risks.append(f"\u8ddd\u622a\u6b62\u7ea6 {math.ceil(days)} \u5929")
-                actions.append("\u5efa\u8bae\u89c2\u5bdf\u6216\u6392\u9664\uff0c\u9664\u975e\u5df2\u6709\u5ba2\u6237\u7ebf\u7d22")
+                actions.append("\u5c3d\u5feb\u786e\u8ba4\u54cd\u5e94\u8d44\u6e90\u3001\u8d44\u8d28\u548c\u4ea4\u4ed8\u65f6\u95f4\u662f\u5426\u53ef\u884c")
+            else:
+                add("deadline", "Deadline window", 0, f"{days:.1f} days remaining")
+        elif notice.deadline_at:
+            add("deadline", "Deadline window", 0, "Unrecognized deadline date")
         else:
-            risks.append("\u5efa\u8bae\u5217\u4e3a\u91cd\u70b9\u5546\u673a\uff0c\u67e5\u770b\u5b8c\u6574\u516c\u544a\u548c\u9644\u4ef6")
+            risks.append("\u672a\u63d0\u53d6\u5230\u622a\u6b62\u65f6\u95f4")
 
         if notice.budget_cny is None and threshold <= 0:
-            risks.append("\u672a\u63d0\u53d6\u5230\u91c7\u8d2d\u5355\u4f4d")
+            risks.append("\u672a\u63d0\u53d6\u5230\u9879\u76ee\u9884\u7b97")
         if not notice.buyer:
             risks.append("\u672a\u63d0\u53d6\u5230\u91c7\u8d2d\u5355\u4f4d")
 
-        score = max(0, min(100, score))
+        if score > 100:
+            add("score_cap", "Maximum score cap", 100 - score)
+        elif score < 0:
+            add("score_floor", "Minimum score floor", -score)
         level = _level(score)
         business_lines = [item[0] for item in line_hits]
         reasons: list[str] = []
@@ -167,7 +231,7 @@ class Matcher:
             buyer_hits=_unique(buyer_hits), negative_hits=_unique(negative_hits),
             priority_account_hits=priority_account_hits, region_match=region_match,
             budget_status=budget_status, reasons=reasons, risks=_unique(risks),
-            recommended_actions=_unique(actions),
+            recommended_actions=_unique(actions), contributions=contributions,
         )
 
 
@@ -177,6 +241,23 @@ def _hits(text: str, terms: list[str]) -> list[str]:
 
 def _unique(items: list[str]) -> list[str]:
     return list(dict.fromkeys(items))
+
+
+def _term_details(strong: list[str], related: list[str]) -> str:
+    parts = []
+    if strong:
+        parts.append("strong: " + ", ".join(_unique(strong)))
+    if related:
+        parts.append("related: " + ", ".join(_unique(related)))
+    return "; ".join(parts)
+
+
+def _comparable_datetimes(value: datetime, reference: datetime) -> tuple[datetime, datetime]:
+    if value.tzinfo is None and reference.tzinfo is not None:
+        value = value.replace(tzinfo=reference.tzinfo)
+    elif value.tzinfo is not None and reference.tzinfo is None:
+        reference = reference.replace(tzinfo=value.tzinfo)
+    return value, reference
 
 
 def _money_wan(value: float) -> str:

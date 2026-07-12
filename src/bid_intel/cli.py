@@ -16,8 +16,10 @@ from .competitive import (
 from .dashboard import write_dashboard
 from .doctor import run_doctor
 from .exports import write_crm_csv
+from .explain import build_explanation, render_explanation, render_explanation_json
 from .importers import load_notices
 from .matcher import Matcher
+from .models import Notice, parse_datetime
 from .notifier import load_dotenv, render_feishu_digest, send_feishu_text
 from .onboarding import choose_profile, initialize
 from .profiles import list_profiles, write_profile
@@ -52,6 +54,18 @@ def build_parser() -> argparse.ArgumentParser:
 
     score_cmd = sub.add_parser("score", help="对公告评分")
     score_cmd.add_argument("--all", action="store_true", help="重新评分全部公告")
+
+    explain = sub.add_parser("explain", help="explain deterministic score contributions for a sample notice")
+    explain.add_argument("--title", required=True)
+    explain.add_argument("--buyer", default="")
+    explain.add_argument("--content", default="")
+    explain.add_argument("--stage", default="")
+    explain.add_argument("--region", default="")
+    explain.add_argument("--budget-cny", type=float)
+    explain.add_argument("--published-at", default="")
+    explain.add_argument("--deadline-at")
+    explain.add_argument("--as-of", help="ISO date/time used for deterministic recency and deadline scoring")
+    explain.add_argument("--json", action="store_true", help="emit stable machine-readable JSON")
 
     digest = sub.add_parser("digest", help="生成商机日报")
     digest.add_argument("--min-score", type=int, default=30)
@@ -202,6 +216,32 @@ def main(argv: list[str] | None = None) -> int:
         print("Next steps:")
         print(f"  openbid --profile {profile_target} --sources {sources_target} import notices.csv --score")
         print(f"  openbid --profile {profile_target} --sources {sources_target} dashboard")
+        return 0
+
+    if args.command == "explain":
+        errors = validate_config(args.profile, "profile")
+        if errors:
+            print(f"error: invalid profile {args.profile}", file=sys.stderr)
+            for error in errors:
+                print(f"  - {error}", file=sys.stderr)
+            return 2
+        date_values = (
+            ("published-at", args.published_at),
+            ("deadline-at", args.deadline_at),
+            ("as-of", args.as_of),
+        )
+        for name, value in date_values:
+            if value and parse_datetime(value) is None:
+                print(f"error: --{name} must be an ISO date or date-time", file=sys.stderr)
+                return 2
+        notice = Notice(
+            title=args.title, url="", source="explain", published_at=args.published_at,
+            deadline_at=args.deadline_at, stage=args.stage, buyer=args.buyer,
+            region=args.region, budget_cny=args.budget_cny, content=args.content,
+        )
+        result = Matcher.from_file(args.profile).score(notice, now=parse_datetime(args.as_of))
+        payload = build_explanation(notice, result, args.profile)
+        print(render_explanation_json(payload) if args.json else render_explanation(payload), end="")
         return 0
 
     store = Store(args.db)
