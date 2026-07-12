@@ -28,7 +28,7 @@ Public procurement data is fragmented across portals, spreadsheets, subscription
 ## Why this project exists
 
 - **Useful across industries:** the engine is not tied to one company, region, portal, or product category.
-- **Fast first result:** six built-in profile packs cover common procurement markets.
+- **Fast first result:** seven built-in profile packs cover common procurement markets.
 - **Bring almost any export:** JSON, JSONL, and CSV imports support common English and Chinese field aliases plus custom mappings.
 - **Explainable ranking:** every score includes matched reasons, risks, and recommended next actions.
 - **Portable visual dashboard:** generate one self-contained HTML file with search and filters; no server required.
@@ -78,6 +78,7 @@ The file works offline and can be opened in any modern browser. It includes full
 | `marketing-services` | Branding, events, research, consulting and training |
 | `energy-sustainability` | Solar, storage, efficiency, carbon and environmental services |
 | `education` | Digital learning, teaching/lab equipment, campus services and infrastructure |
+| `logistics` | Transportation, warehousing, fulfillment, cold-chain, fleet technology and equipment |
 
 Create both ignored local configuration files in one step, or list and initialize only a profile pack:
 

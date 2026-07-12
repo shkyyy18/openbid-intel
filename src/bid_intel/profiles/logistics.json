@@ -1,0 +1,183 @@
+{
+  "buyer_terms": [
+    "logistics department",
+    "supply chain department",
+    "distribution center",
+    "port authority",
+    "airport authority",
+    "postal operator",
+    "retail group",
+    "manufacturing company",
+    "\u7269\u6d41\u90e8\u95e8",
+    "\u4f9b\u5e94\u94fe\u90e8\u95e8",
+    "\u914d\u9001\u4e2d\u5fc3",
+    "\u6e2f\u53e3\u7ba1\u7406\u673a\u6784",
+    "\u673a\u573a\u7ba1\u7406\u673a\u6784",
+    "\u90ae\u653f\u4f01\u4e1a"
+  ],
+  "procurement_terms": [
+    "procurement",
+    "tender",
+    "request for proposal",
+    "rfp",
+    "request for quotation",
+    "rfq",
+    "invitation to bid",
+    "framework agreement",
+    "contract award",
+    "\u91c7\u8d2d",
+    "\u62db\u6807",
+    "\u8be2\u4ef7",
+    "\u7ade\u4e89\u6027\u78cb\u5546",
+    "\u6846\u67b6\u534f\u8bae"
+  ],
+  "negative_terms": [
+    "driver recruitment",
+    "courier recruitment",
+    "used truck sale",
+    "residential moving service",
+    "logistics franchise opportunity",
+    "\u53f8\u673a\u62db\u8058",
+    "\u5feb\u9012\u5458\u62db\u8058",
+    "\u4e8c\u624b\u8d27\u8f66\u51fa\u552e",
+    "\u5c45\u6c11\u642c\u5bb6\u670d\u52a1"
+  ],
+  "stage_weights": {
+    "procurement plan": 8,
+    "request for information": 8,
+    "tender notice": 5,
+    "request for proposal": 5,
+    "request for quotation": 4,
+    "award notice": -12,
+    "cancelled": -18,
+    "correction": -2,
+    "\u91c7\u8d2d\u610f\u5411": 8,
+    "\u62db\u6807\u516c\u544a": 5,
+    "\u4e2d\u6807\u516c\u544a": -12
+  },
+  "focus_regions": [],
+  "min_budget_cny": 0,
+  "sales_profile": {
+    "name": "Example logistics and supply-chain sales profile",
+    "all_business_lines": true,
+    "focus_regions": [],
+    "minimum_followup_budget_cny": 0,
+    "priority_accounts": []
+  },
+  "meta": {
+    "id": "logistics",
+    "title": "Logistics and supply-chain procurement",
+    "description": "Transportation, distribution, warehousing, fulfillment, cold-chain, fleet technology, and logistics equipment."
+  },
+  "business_lines": [
+    {
+      "id": "transportation_distribution",
+      "name": "Transportation and distribution",
+      "base_score": 24,
+      "strong_terms": [
+        "freight transportation",
+        "last-mile delivery",
+        "line-haul transportation",
+        "distribution network operations",
+        "parcel delivery services",
+        "multimodal transport services",
+        "road freight services",
+        "urban distribution services",
+        "\u8d27\u7269\u8fd0\u8f93\u670d\u52a1",
+        "\u5e72\u7ebf\u8fd0\u8f93",
+        "\u672b\u7aef\u914d\u9001",
+        "\u57ce\u5e02\u914d\u9001\u670d\u52a1",
+        "\u591a\u5f0f\u8054\u8fd0\u670d\u52a1",
+        "\u5feb\u9012\u914d\u9001\u670d\u52a1"
+      ],
+      "related_terms": [
+        "transport management system",
+        "route optimization",
+        "freight forwarding services",
+        "shipment tracking",
+        "dispatch scheduling",
+        "proof of delivery",
+        "\u8fd0\u8f93\u7ba1\u7406\u7cfb\u7edf",
+        "\u8def\u7ebf\u4f18\u5316",
+        "\u8d27\u8fd0\u4ee3\u7406\u670d\u52a1",
+        "\u8d27\u7269\u8ddf\u8e2a",
+        "\u8c03\u5ea6\u7ba1\u7406",
+        "\u7535\u5b50\u56de\u5355"
+      ]
+    },
+    {
+      "id": "warehousing_fulfillment",
+      "name": "Warehousing, fulfillment, and supply-chain services",
+      "base_score": 24,
+      "strong_terms": [
+        "warehouse operations",
+        "third-party logistics services",
+        "order fulfillment services",
+        "distribution center operations",
+        "warehouse management system",
+        "contract logistics services",
+        "bonded warehouse services",
+        "e-commerce fulfillment",
+        "\u4ed3\u50a8\u8fd0\u8425\u670d\u52a1",
+        "\u7b2c\u4e09\u65b9\u7269\u6d41\u670d\u52a1",
+        "\u8ba2\u5355\u5c65\u7ea6\u670d\u52a1",
+        "\u914d\u9001\u4e2d\u5fc3\u8fd0\u8425",
+        "\u4ed3\u5e93\u7ba1\u7406\u7cfb\u7edf",
+        "\u5408\u540c\u7269\u6d41\u670d\u52a1",
+        "\u4fdd\u7a0e\u4ed3\u50a8\u670d\u52a1",
+        "\u7535\u5546\u4ed3\u914d\u670d\u52a1"
+      ],
+      "related_terms": [
+        "inventory management",
+        "picking and packing",
+        "automated storage and retrieval system",
+        "parcel sorting system",
+        "pallet racking system",
+        "barcode inventory tracking",
+        "\u5e93\u5b58\u7ba1\u7406",
+        "\u62e3\u9009\u5305\u88c5",
+        "\u81ea\u52a8\u5316\u7acb\u4f53\u4ed3\u5e93",
+        "\u5206\u62e3\u7cfb\u7edf",
+        "\u6258\u76d8\u8d27\u67b6",
+        "\u6761\u7801\u5e93\u5b58\u7ba1\u7406"
+      ]
+    },
+    {
+      "id": "cold_chain_fleet_equipment",
+      "name": "Cold chain, fleet technology, and logistics equipment",
+      "base_score": 25,
+      "strong_terms": [
+        "cold chain logistics",
+        "refrigerated transportation",
+        "temperature-controlled warehousing",
+        "fleet management system",
+        "commercial vehicle telematics",
+        "material handling equipment",
+        "electric forklift procurement",
+        "refrigerated truck leasing",
+        "\u51b7\u94fe\u7269\u6d41\u670d\u52a1",
+        "\u51b7\u85cf\u8fd0\u8f93",
+        "\u6e29\u63a7\u4ed3\u50a8",
+        "\u8f66\u961f\u7ba1\u7406\u7cfb\u7edf",
+        "\u5546\u7528\u8f66\u8f66\u8054\u7f51",
+        "\u7269\u6d41\u642c\u8fd0\u8bbe\u5907",
+        "\u7535\u52a8\u53c9\u8f66\u91c7\u8d2d",
+        "\u51b7\u85cf\u8f66\u79df\u8d41"
+      ],
+      "related_terms": [
+        "temperature monitoring system",
+        "reefer unit maintenance",
+        "vehicle dispatch platform",
+        "forklift charging station",
+        "dock leveler",
+        "loading bay equipment",
+        "\u6e29\u5ea6\u76d1\u63a7\u7cfb\u7edf",
+        "\u5236\u51b7\u673a\u7ec4\u7ef4\u62a4",
+        "\u8f66\u8f86\u8c03\u5ea6\u5e73\u53f0",
+        "\u53c9\u8f66\u5145\u7535\u8bbe\u65bd",
+        "\u88c5\u5378\u5e73\u53f0",
+        "\u6708\u53f0\u8bbe\u5907"
+      ]
+    }
+  ]
+}

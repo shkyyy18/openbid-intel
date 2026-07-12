@@ -15,7 +15,8 @@ OpenBid Intel favors reusable foundations and trustworthy integrations over a la
 
 - [x] Document profile-pack authoring and review guidelines.
 - [x] Add a broadly useful education profile pack.
-- [ ] Add broadly useful packs for facilities management, logistics, and professional services.
+- [x] Add a broadly useful logistics and supply-chain profile pack.
+- [ ] Add broadly useful packs for facilities management and professional services.
 - [x] Add profile and source configuration validation.
 - [x] Add a command that explains score contributions on sample notices.
 - [ ] Support composing a base industry pack with a private local overlay.

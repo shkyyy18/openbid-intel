@@ -1,16 +1,20 @@
 import json
+from io import StringIO
 
 import pytest
 
-from io import StringIO
-
+from bid_intel.matcher import Matcher
+from bid_intel.models import Notice
 from bid_intel.onboarding import choose_profile
 from bid_intel.profiles import list_profiles, load_builtin_profile, write_profile
 
 
 def test_builtin_profiles_cover_popular_sectors():
     ids = {row["id"] for row in list_profiles()}
-    assert {"it-digital", "construction", "medical-lab", "marketing-services", "energy-sustainability", "education"} <= ids
+    assert {
+        "it-digital", "construction", "medical-lab", "marketing-services",
+        "energy-sustainability", "education", "logistics",
+    } <= ids
 
 
 def test_write_profile_creates_editable_json(tmp_path):
@@ -43,3 +47,42 @@ def test_interactive_profile_selection_accepts_number_and_default():
     education_number = next(index for index, row in enumerate(profiles, start=1) if row["id"] == "education")
     assert choose_profile(StringIO(f"{education_number}\n"), StringIO()) == "education"
     assert "Choose an industry profile" in output.getvalue()
+
+
+def test_logistics_profile_is_broad_specific_and_neutral():
+    profile = load_builtin_profile("logistics")
+    lines = profile["business_lines"]
+    assert {line["id"] for line in lines} == {
+        "transportation_distribution",
+        "warehousing_fulfillment",
+        "cold_chain_fleet_equipment",
+    }
+    assert profile["focus_regions"] == []
+    assert profile["min_budget_cny"] == 0
+    assert profile["sales_profile"]["priority_accounts"] == []
+    assert profile["sales_profile"]["focus_regions"] == []
+    terms = {
+        term.lower()
+        for line in lines
+        for key in ("strong_terms", "related_terms")
+        for term in line[key]
+    }
+    assert not ({"service", "vehicle", "transport", "warehouse", "logistics"} & terms)
+
+
+@pytest.mark.parametrize(
+    ("title", "expected_line"),
+    [
+        ("Regional line-haul transportation tender", "Transportation and distribution"),
+        ("Warehouse management system and order fulfillment services", "Warehousing, fulfillment, and supply-chain services"),
+        ("Cold chain logistics and fleet management system", "Cold chain, fleet technology, and logistics equipment"),
+    ],
+)
+def test_logistics_profile_matches_distinct_opportunity_types(title, expected_line):
+    notice = Notice(
+        title=title, url="https://example.invalid/tender", source="fixture",
+        published_at="2026-07-13", stage="tender notice", buyer="Example organization",
+    )
+    result = Matcher(load_builtin_profile("logistics")).score(notice)
+    assert expected_line in result.business_lines
+    assert result.score >= 30
