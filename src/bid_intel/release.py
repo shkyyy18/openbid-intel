@@ -44,6 +44,7 @@ REQUIRED_PATHS = (
 PUBLIC_TEXT_SUFFIXES = {".py", ".md", ".json", ".toml", ".yml", ".yaml", ".ps1", ".cmd", ".example", ".txt"}
 PUBLIC_SCAN_EXCLUDED = {".git", "data", "reports", "__pycache__", ".pytest_cache", ".venv"}
 LIVE_FEISHU_WEBHOOK = re.compile(r"https://open\.feishu\.cn/open-apis/bot/v2/hook/[A-Za-z0-9_-]{8,}")
+PRIVATE_PUBLIC_TERMS = ("".join(chr(code) for code in (0x970D, 0x83B1, 0x6C83)), "\\" + "u970d\\" + "u83b1\\" + "u6c83")
 
 
 def _scan_public_tree(root: Path) -> list[str]:
@@ -51,7 +52,9 @@ def _scan_public_tree(root: Path) -> list[str]:
     for path in root.rglob("*"):
         if not path.is_file() or any(part in PUBLIC_SCAN_EXCLUDED for part in path.relative_to(root).parts):
             continue
-        if path.name == ".env" or (path.suffix.lower() not in PUBLIC_TEXT_SUFFIXES and path.name not in {".gitignore", ".gitattributes"}):
+        if path.name == ".env" or path.name.endswith(".local.json"):
+            continue
+        if path.suffix.lower() not in PUBLIC_TEXT_SUFFIXES and path.name not in {".gitignore", ".gitattributes"}:
             continue
         try:
             text = path.read_text(encoding="utf-8-sig")
@@ -62,6 +65,8 @@ def _scan_public_tree(root: Path) -> list[str]:
             findings.append(f"{relative}: machine-specific absolute path")
         if LIVE_FEISHU_WEBHOOK.search(text):
             findings.append(f"{relative}: possible live Feishu webhook")
+        if any(term.lower() in text.lower() for term in PRIVATE_PUBLIC_TERMS):
+            findings.append(f"{relative}: private company term in public content")
     return findings
 
 
@@ -194,7 +199,7 @@ def run_release_check(
         ok = False
         checks.append(_check("public content scan", "error", "; ".join(public_findings[:10])))
     else:
-        checks.append(_check("public content scan", "ok", "no machine-specific paths or live Feishu webhooks"))
+        checks.append(_check("public content scan", "ok", "no machine-specific paths, live Feishu webhooks, or private company terms"))
 
     env_example = root / ".env.example"
     try:

@@ -63,4 +63,4 @@ def test_report_unknown_amount_and_disclaimer():
     report = render_competitor_report(summarize_suppliers(rows), rows, relationships=build_relationships(rows))
     assert "\u5f85\u786e\u8ba4" in report
     assert "\u542f\u53d1\u5f0f\u521d\u5224" in report
-    assert "\u4e0d\u5fc5\u7136\u662f\u970d\u83b1\u6c83\u7684\u76f4\u63a5\u7ade\u4e89\u5bf9\u624b" in report
+    assert "\u4e0d\u5fc5\u7136\u662f\u672c\u56e2\u961f\u7684\u76f4\u63a5\u7ade\u4e89\u5bf9\u624b" in report

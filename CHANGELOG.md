@@ -10,6 +10,11 @@ All notable changes to OpenBid Intel are documented here.
 - A zero-dependency RSS 2.0 and Atom connector with relative URL handling, date normalization, history cutoffs, deduplication, and offline XML fixtures.
 - A sanitized RSS source configuration example and connector-authoring documentation.
 - A reproducible GitHub Pages workflow that publishes only the synthetic dashboard demo.
+- Public-output privacy checks for both literal and escaped private company terms.
+
+### Changed
+
+- Replaced company-specific scoring actions and supplier-report wording with industry-neutral language.
 
 ## [0.3.0] - 2026-07-12
 
