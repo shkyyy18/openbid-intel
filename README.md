@@ -188,9 +188,14 @@ sanitized fixtures               private sources and credentials
 
 ## Inputs and connectors
 
-The bundled connector is a conservative example for selected public list pages on the China Government Procurement Network (CCGP). It is one adapter, not the product boundary. OpenBid Intel does **not** claim complete national or global coverage.
+Two connector types are included:
 
-Public portals change, block automation, and expose incomplete metadata. Add connectors only when ordinary public access and site terms permit it. Never bypass authentication, CAPTCHA, paywalls, or access controls. Prefer official APIs, open-data feeds, RSS, email exports, and manual exports where available.
+- `ccgp_list`: a conservative adapter for selected public list pages on the China Government Procurement Network;
+- `rss_atom`: a generic standard-library RSS 2.0 and Atom feed connector with relative-link handling, history cutoffs, deduplication, and optional item limits.
+
+Copy `samples/sources.rss.example.json` to an ignored local source configuration and replace the synthetic URL with a public feed you are permitted to access. The connector registry in `src/bid_intel/connectors.py` is the stable extension point for community adapters. Each connector receives a shared context for pacing, history limits, detail budgets, and fetching, and returns normalized `Notice` records plus non-fatal warnings.
+
+These adapters are examples, not the product boundary, and OpenBid Intel does **not** claim complete national or global coverage. Public portals change, block automation, and expose incomplete metadata. Add connectors only when ordinary public access and site terms permit it. Never bypass authentication, CAPTCHA, paywalls, or access controls. Prefer official APIs, open-data feeds, RSS, email exports, and manual exports where available.
 
 See [Data Sources](docs/DATA_SOURCES.md) and [Public Data Handling](docs/DATA_HANDLING.md).
 

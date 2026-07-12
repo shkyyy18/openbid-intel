@@ -11,6 +11,8 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urljoin
 
+from .connectors import ConnectorContext, ConnectorOutput, ConnectorRegistry
+from .feed_connector import RssAtomConnector
 from .htmlutil import html_to_text, meta_content
 from .models import Notice
 
@@ -32,9 +34,68 @@ def load_sources(path: str | Path) -> dict[str, Any]:
         return json.load(handle)
 
 
+class CcgpListConnector:
+    type_name = "ccgp_list"
+    uses_detail_budget = True
+
+    def collect(self, source: dict[str, Any], context: ConnectorContext) -> ConnectorOutput:
+        notices: list[Notice] = []
+        seen_urls: set[str] = set()
+        for page_number, page_url in enumerate_ccgp_page_urls(str(source["url"]), context.max_pages):
+            if page_number > 0:
+                time.sleep(context.interval_seconds)
+            html_text = context.fetch_text(page_url)
+            page_notices = parse_ccgp_list(
+                html_text,
+                page_url,
+                str(source.get("name", "Unnamed source")),
+                str(source.get("stage", "Unknown stage")),
+            )
+            if not page_notices:
+                break
+            oldest = None
+            for notice in page_notices:
+                published = _as_datetime(notice.published_at)
+                if published and (oldest is None or published < oldest):
+                    oldest = published
+                if context.cutoff and published and published < context.cutoff:
+                    continue
+                if notice.url not in seen_urls:
+                    notices.append(notice)
+                    seen_urls.add(notice.url)
+            if context.cutoff and oldest and oldest < context.cutoff:
+                break
+
+        detail_errors: list[str] = []
+        if context.fetch_details and context.detail_budget > 0:
+            candidates = [notice for notice in notices if is_candidate(notice, context.priority_terms)]
+            if "\u4e2d\u6807" in str(source.get("stage", "")) or "\u6210\u4ea4" in str(source.get("stage", "")):
+                candidates = notices
+            candidates.sort(key=lambda notice: detail_priority(notice, context.priority_terms), reverse=True)
+            for notice in candidates[:context.detail_budget]:
+                time.sleep(context.interval_seconds)
+                try:
+                    detail_html = context.fetch_text(notice.url)
+                    enrich_ccgp_detail(notice, detail_html)
+                except Exception as exc:
+                    detail_errors.append(f"{notice.url}: {exc}")
+        warnings = []
+        if detail_errors:
+            warnings.append(f"\u8be6\u60c5\u8bfb\u53d6\u5931\u8d25 {len(detail_errors)} \u6761\uff1b" + " | ".join(detail_errors[:3]))
+        return ConnectorOutput(notices, warnings)
+
+
+def default_connector_registry() -> ConnectorRegistry:
+    registry = ConnectorRegistry()
+    registry.register(CcgpListConnector())
+    registry.register(RssAtomConnector())
+    return registry
+
+
 def collect_sources(
     config_path: str | Path, *, fetch_details: bool = True, max_details: int | None = None,
     max_pages: int | None = None, history_days: int | None = None,
+    registry: ConnectorRegistry | None = None,
 ) -> list[CollectResult]:
     config = load_sources(config_path)
     interval = float(config.get("request_interval_seconds", 1.0))
@@ -44,74 +105,48 @@ def collect_sources(
     priority_terms = [str(term).lower() for term in config.get("priority_detail_terms", [])]
     results: list[CollectResult] = []
     enabled_sources = [source for source in config.get("sources", []) if source.get("enabled", True)]
-    source_count = len(enabled_sources)
-    base_budget, extra_budget = divmod(max(0, detail_budget), max(1, source_count))
-    detail_budgets = [base_budget + (1 if index < extra_budget else 0) for index in range(source_count)]
     reference = datetime.now().astimezone()
+    connectors = registry or default_connector_registry()
+    detail_budgets = [0 for _source in enabled_sources]
+    detail_indices: list[int] = []
+    for index, source in enumerate(enabled_sources):
+        try:
+            if connectors.get(str(source.get("type", ""))).uses_detail_budget:
+                detail_indices.append(index)
+        except ValueError:
+            pass
+    if detail_indices:
+        base_budget, extra_budget = divmod(max(0, detail_budget), len(detail_indices))
+        for position, index in enumerate(detail_indices):
+            detail_budgets[index] = base_budget + (1 if position < extra_budget else 0)
 
     for source_index, source in enumerate(enabled_sources):
-        source_detail_budget = detail_budgets[source_index]
         try:
-            if source.get("type") != "ccgp_list":
-                raise ValueError(f"\u4e0d\u652f\u6301\u7684\u6570\u636e\u6e90\u7c7b\u578b: {source.get('type')}")
             source_pages = int(max_pages if max_pages is not None else source.get("max_pages", default_pages))
             source_days = int(history_days if history_days is not None else source.get("history_days", default_days))
-            cutoff = reference - timedelta(days=source_days) if source_days > 0 else None
-            notices: list[Notice] = []
-            seen_urls: set[str] = set()
-
-            for page_number, page_url in enumerate_ccgp_page_urls(str(source["url"]), source_pages):
-                if page_number > 0:
-                    time.sleep(interval)
-                html_text = fetch_text(page_url)
-                page_notices = parse_ccgp_list(
-                    html_text, page_url, str(source.get("name", "\u672a\u547d\u540d\u6570\u636e\u6e90")),
-                    str(source.get("stage", "\u672a\u77e5\u9636\u6bb5")),
-                )
-                if not page_notices:
-                    break
-                oldest = None
-                for notice in page_notices:
-                    published = _as_datetime(notice.published_at)
-                    if published and (oldest is None or published < oldest):
-                        oldest = published
-                    if cutoff and published and published < cutoff:
-                        continue
-                    if notice.url not in seen_urls:
-                        notices.append(notice)
-                        seen_urls.add(notice.url)
-                if cutoff and oldest and oldest < cutoff:
-                    break
-
-            detail_errors: list[str] = []
-            if fetch_details and source_detail_budget > 0:
-                candidates = [notice for notice in notices if is_candidate(notice, priority_terms)]
-                if "\u4e2d\u6807" in str(source.get("stage", "")) or "\u6210\u4ea4" in str(source.get("stage", "")):
-                    candidates = notices
-                candidates.sort(key=lambda notice: detail_priority(notice, priority_terms), reverse=True)
-                source_details = 0
-                for notice in candidates:
-                    if source_details >= source_detail_budget:
-                        break
-                    time.sleep(interval)
-                    try:
-                        detail_html = fetch_text(notice.url)
-                        enrich_ccgp_detail(notice, detail_html)
-                    except Exception as exc:
-                        detail_errors.append(f"{notice.url}: {exc}")
-                    source_details += 1
-            warning = ""
-            if detail_errors:
-                warning = f"\u8be6\u60c5\u8bfb\u53d6\u5931\u8d25 {len(detail_errors)} \u6761\uff1b" + " | ".join(detail_errors[:3])
+            context = ConnectorContext(
+                fetch_text=fetch_text,
+                interval_seconds=interval,
+                max_pages=source_pages,
+                cutoff=reference - timedelta(days=source_days) if source_days > 0 else None,
+                fetch_details=fetch_details,
+                detail_budget=detail_budgets[source_index],
+                priority_terms=priority_terms,
+            )
+            connector = connectors.get(str(source.get("type", "")))
+            output = connector.collect(source, context)
             results.append(CollectResult(
-                str(source["id"]), str(source.get("name", source["id"])), len(notices), notices, warning=warning
+                str(source["id"]),
+                str(source.get("name", source["id"])),
+                len(output.notices),
+                output.notices,
+                warning=" | ".join(output.warnings),
             ))
         except Exception as exc:  # Keep other sources running.
             results.append(CollectResult(
                 str(source.get("id", "unknown")), str(source.get("name", "unknown")), 0, [], str(exc)
             ))
     return results
-
 
 def enumerate_ccgp_page_urls(base_url: str, max_pages: int) -> list[tuple[int, str]]:
     pages = max(1, max_pages)
@@ -122,7 +157,7 @@ def enumerate_ccgp_page_urls(base_url: str, max_pages: int) -> list[tuple[int, s
 
 
 def fetch_text(url: str, timeout: float = 30.0) -> str:
-    request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT, "Accept": "text/html,application/xhtml+xml"})
+    request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT, "Accept": "text/html,application/xhtml+xml,application/rss+xml,application/atom+xml,application/xml;q=0.9"})
     try:
         with urllib.request.urlopen(request, timeout=timeout) as response:
             payload = response.read()

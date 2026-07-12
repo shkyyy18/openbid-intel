@@ -40,6 +40,10 @@ If rules, page structure, or public accessibility change, disable the source fir
 
 ## Adding a connector
 
-The current collector supports `ccgp_list`. A structurally different website should receive a dedicated connector and offline HTML fixtures rather than being forced through the existing parser.
+The connector registry currently includes `ccgp_list` and `rss_atom`. `rss_atom` supports RSS 2.0 and Atom feeds using only the Python standard library. See `samples/sources.rss.example.json` for a sanitized configuration.
+
+A connector implements the `SourceConnector` protocol in `src/bid_intel/connectors.py`: it declares a unique `type_name` and returns `ConnectorOutput` from `collect(source, context)`. The shared `ConnectorContext` supplies the fetch function, request interval, history cutoff, page and detail budgets, and priority terms. Register new adapters through a `ConnectorRegistry`; do not add another source-type conditional to the collection loop.
+
+A structurally different website should receive a dedicated connector and offline HTML, XML, or JSON fixtures rather than being forced through an existing parser.
 
 Tests for a new connector should cover list fields, detail fields, encoding, relative URLs, missing values, structural changes, pagination, history cutoffs, global detail budgets, and failure isolation. CI must not access real websites. Perform live verification manually at a low request rate and record the date, source, and failures.

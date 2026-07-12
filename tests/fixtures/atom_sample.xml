@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Example Atom Feed</title>
+  <entry>
+    <title>Laboratory equipment framework</title>
+    <link href="/notices/200" rel="alternate" />
+    <updated>2026-07-11T08:00:00Z</updated>
+    <summary>Scientific instruments and maintenance.</summary>
+  </entry>
+</feed>

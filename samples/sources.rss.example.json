@@ -1,0 +1,16 @@
+{
+  "request_interval_seconds": 1.0,
+  "history_days": 30,
+  "sources": [
+    {
+      "id": "public-procurement-feed",
+      "name": "Public procurement RSS feed",
+      "type": "rss_atom",
+      "url": "https://example.invalid/procurement/feed.xml",
+      "stage": "notice",
+      "region": "Example Region",
+      "max_items": 100,
+      "enabled": true
+    }
+  ]
+}

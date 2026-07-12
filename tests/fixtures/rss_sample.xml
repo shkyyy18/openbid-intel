@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Example Procurement Feed</title>
+    <item>
+      <title>Cloud platform services RFP</title>
+      <link>https://example.invalid/notices/100</link>
+      <pubDate>Sun, 12 Jul 2026 09:30:00 +0800</pubDate>
+      <description><![CDATA[<p>Managed cloud, migration, and security services.</p>]]></description>
+    </item>
+    <item>
+      <title>Missing publication date is skipped</title>
+      <link>https://example.invalid/notices/skip</link>
+    </item>
+  </channel>
+</rss>

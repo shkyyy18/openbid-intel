@@ -2,6 +2,15 @@
 
 All notable changes to OpenBid Intel are documented here.
 
+## [Unreleased]
+
+### Added
+
+- A typed connector protocol and registry for community source adapters.
+- A zero-dependency RSS 2.0 and Atom connector with relative URL handling, date normalization, history cutoffs, deduplication, and offline XML fixtures.
+- A sanitized RSS source configuration example and connector-authoring documentation.
+- A reproducible GitHub Pages workflow that publishes only the synthetic dashboard demo.
+
 ## [0.3.0] - 2026-07-12
 
 ### Added

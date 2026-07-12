@@ -19,9 +19,10 @@ OpenBid Intel favors reusable foundations and trustworthy integrations over a la
 
 ## Connector ecosystem
 
-- [ ] Document a stable connector interface and offline fixture contract.
+- [x] Document a stable connector interface and offline fixture contract.
 - [ ] Add compliant adapters for more public procurement portals and open-data APIs.
-- [ ] Add RSS, email-export, and generic webhook ingestion.
+- [x] Add RSS and Atom ingestion.
+- [ ] Add email-export and generic webhook ingestion.
 - [ ] Publish a connector compatibility matrix with last-verified dates.
 
 ## Later
