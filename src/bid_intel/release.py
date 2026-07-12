@@ -18,6 +18,8 @@ REQUIRED_PATHS = (
     "run.py",
     "bid-intel.cmd",
     "src/bid_intel/profiles.py",
+    "src/bid_intel/dashboard.py",
+    "docs/assets/dashboard-preview.png",
     "src/bid_intel/profiles/it-digital.json",
     "scripts/daily.ps1",
     "scripts/weekly_intelligence.ps1",

@@ -4,14 +4,14 @@
 
 # OpenBid Intel
 
-**Turn messy tender feeds into ranked opportunities for any industry ? locally.**
+**Turn messy tender feeds into ranked opportunities for any industry - locally.**
 
 [![Tests](https://github.com/shkyyy18/openbid-intel/actions/workflows/tests.yml/badge.svg)](https://github.com/shkyyy18/openbid-intel/actions/workflows/tests.yml)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-3776AB)](https://www.python.org/)
 [![MIT License](https://img.shields.io/badge/license-MIT-22c55e)](LICENSE)
 [![Zero runtime dependencies](https://img.shields.io/badge/runtime_dependencies-0-8b5cf6)](pyproject.toml)
 
-[Quick start](#30-second-quick-start) ? [Industry packs](#built-in-industry-packs) ? [Import your data](#import-from-any-export) ? [How it works](#how-it-works) ? [Roadmap](ROADMAP.md)
+[Quick start](#30-second-quick-start) | [Dashboard](#portable-html-dashboard) | [Industry packs](#built-in-industry-packs) | [Import your data](#import-from-any-export) | [Roadmap](ROADMAP.md)
 
 </div>
 
@@ -21,12 +21,15 @@ Public procurement data is fragmented across portals, spreadsheets, subscription
 
 > OpenBid Intel is a triage and intelligence tool, not a bidding database or legal source of truth. Verify deadlines, amounts, qualifications, and attachments on the official notice page.
 
+![OpenBid Intel opportunity dashboard](docs/assets/dashboard-preview.png)
+
 ## Why this project exists
 
 - **Useful across industries:** the engine is not tied to one company, region, portal, or product category.
 - **Fast first result:** five built-in profile packs cover common procurement markets.
 - **Bring almost any export:** JSON, JSONL, and CSV imports support common English and Chinese field aliases plus custom mappings.
 - **Explainable ranking:** every score includes matched reasons, risks, and recommended next actions.
+- **Portable visual dashboard:** generate one self-contained HTML file with search and filters; no server required.
 - **Local-first:** notices, profiles, scores, feedback, and reports remain in SQLite unless you explicitly send a digest.
 - **Connector-friendly, not scraper-first:** use exports immediately; add low-frequency public-source adapters with offline fixtures.
 - **Zero runtime dependencies:** the CLI uses only the Python standard library.
@@ -41,7 +44,7 @@ cd openbid-intel
 python run.py demo
 ```
 
-The cross-industry demo imports six synthetic notices and ranks the IT, data, AI, and cybersecurity opportunities using the default `it-digital` profile. The report is written to `reports/demo_digest.md`.
+The cross-industry demo imports six synthetic notices and ranks the IT, data, AI, and cybersecurity opportunities using the default `it-digital` profile. It writes both `reports/demo_digest.md` and the interactive `reports/demo_dashboard.html`.
 
 Install the CLI locally:
 
@@ -53,6 +56,16 @@ openbid --profile config/profile.local.json demo
 ```
 
 Windows users can also run `bid-intel.cmd demo` without changing the PowerShell execution policy.
+
+## Portable HTML dashboard
+
+Generate a polished, self-contained dashboard directly from the local SQLite database:
+
+```bash
+openbid dashboard --min-score 50 --output reports/dashboard.html
+```
+
+The file works offline and can be opened in any modern browser. It includes full-text search, stage/region/business-line filters, pipeline summary metrics, explainable score reasons, recommended actions, and safe links to official notices. No web server, JavaScript framework, or external asset is required.
 
 ## Built-in industry packs
 
@@ -100,7 +113,7 @@ Example mapping:
 }
 ```
 
-Amount parsing handles values such as `$1.25 million`, `1.2 billion`, `125??`, and `2??`. Canonical fields include `title`, `url`, `source`, `published_at`, `deadline_at`, `stage`, `buyer`, `region`, `budget_cny`, `content`, `award_supplier`, and `award_amount_cny`.
+Amount parsing handles values such as `$1.25 million`, `1.2 billion`, `CNY 1.25 million`, and `CNY 200 million`. Canonical fields include `title`, `url`, `source`, `published_at`, `deadline_at`, `stage`, `buyer`, `region`, `budget_cny`, `content`, `award_supplier`, and `award_amount_cny`.
 
 ## What you get
 
@@ -110,8 +123,9 @@ Amount parsing handles values such as `$1.25 million`, `1.2 billion`, `125??`, a
 | Create an editable profile | `openbid init-profile it-digital` | Private local JSON configuration |
 | Import exports | `openbid import notices.csv --score` | Normalized and deduplicated records |
 | Collect configured public pages | `openbid collect --score` | New notices and collection run log |
-| Score against your profile | `openbid score --all` | 0?100 scores, reasons, risks, actions |
+| Score against your profile | `openbid score --all` | 0-100 scores, reasons, risks, actions |
 | Generate an opportunity digest | `openbid digest --min-score 50` | Markdown or terminal report |
+| Generate an HTML dashboard | `openbid dashboard --min-score 50` | Interactive, self-contained HTML |
 | Run a daily pipeline | `openbid daily --no-push` | Collection, scoring, dated digest |
 | Record sales feedback | `openbid feedback 42 VERDICT --note "owner assigned"` | Auditable human decision |
 | Analyze award suppliers | `openbid competitors` | Supplier ranking and buyer history |
@@ -212,16 +226,16 @@ The easiest ways to extend OpenBid Intel are intentionally modular:
 - add a fixture-tested importer alias or amount format;
 - build a compliant connector for a public procurement source;
 - improve profile schema validation;
-- add a portable HTML dashboard or CRM-friendly export.
+- improve the portable HTML dashboard or add a CRM-friendly export.
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md), open a Discussion for source-compliance questions, and never submit private customer data or live credentials.
 
 ## Project status
 
-OpenBid Intel is an early but usable release. Import, deduplication, scoring, reporting, feedback, supplier analysis, and the local workflow are ready for real-world validation. Source coverage remains deliberately small while the project prioritizes trustworthy, reusable foundations over a long list of brittle scrapers.
+OpenBid Intel is an early but usable release. Import, deduplication, scoring, reporting, the portable dashboard, feedback, supplier analysis, and the local workflow are ready for real-world validation. Source coverage remains deliberately small while the project prioritizes trustworthy, reusable foundations over a long list of brittle scrapers.
 
 See [ROADMAP.md](ROADMAP.md).
 
 ## License
 
-MIT ? 2026 shkyyy18
+MIT (c) 2026 shkyyy18

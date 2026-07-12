@@ -12,6 +12,7 @@ from .competitive import (
     analyze_awards, build_relationships, load_profile, render_competitor_report, resolve_buyer_aliases,
     summarize_suppliers, write_competitor_report,
 )
+from .dashboard import write_dashboard
 from .doctor import run_doctor
 from .importers import load_notices
 from .matcher import Matcher
@@ -53,6 +54,12 @@ def build_parser() -> argparse.ArgumentParser:
     digest.add_argument("--min-score", type=int, default=30)
     digest.add_argument("--limit", type=int, default=20)
     digest.add_argument("--output", help="写入 Markdown 文件；不指定则输出到终端")
+
+    dashboard = sub.add_parser("dashboard", help="generate a self-contained HTML opportunity dashboard")
+    dashboard.add_argument("--min-score", type=int, default=30)
+    dashboard.add_argument("--limit", type=int, default=200)
+    dashboard.add_argument("--output", default="reports/dashboard.html")
+    dashboard.add_argument("--title", default="OpenBid Intel")
 
     push = sub.add_parser("push", help="将商机日报推送到飞书群机器人")
     push.add_argument("--min-score", type=int, default=50)
@@ -109,6 +116,7 @@ def build_parser() -> argparse.ArgumentParser:
     demo = sub.add_parser("demo", help="导入样例、评分并生成报告")
     demo.add_argument("--sample", default="samples/demo_notices.json")
     demo.add_argument("--output", default="reports/demo_digest.md")
+    demo.add_argument("--dashboard-output", default="reports/demo_dashboard.html")
     return parser
 
 
@@ -163,6 +171,12 @@ def main(argv: list[str] | None = None) -> int:
             print(f"已生成：{target}")
         else:
             print(render_digest(rows), end="")
+        return 0
+
+    if args.command == "dashboard":
+        rows = store.ranked(limit=args.limit, min_score=args.min_score)
+        target = write_dashboard(args.output, rows, title=args.title)
+        print(f"Dashboard generated: {target} ({len(rows)} opportunities)")
         return 0
 
     if args.command == "push":
@@ -230,8 +244,10 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "demo":
         imported, updated = _import(store, args.sample)
         count = _score(store, args.profile, all_notices=True)
-        target = write_digest(args.output, store.ranked(limit=20, min_score=0))
-        print(f"Demo 完成：新增 {imported}，更新 {updated}，评分 {count}；报告 {target}")
+        rows = store.ranked(limit=20, min_score=0)
+        target = write_digest(args.output, rows)
+        dashboard_target = write_dashboard(args.dashboard_output, rows, title="OpenBid Intel Demo")
+        print(f"Demo complete: {imported} new, {updated} updated, {count} scored; digest {target}; dashboard {dashboard_target}")
         return 0
 
     return 2

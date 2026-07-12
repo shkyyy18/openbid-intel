@@ -2,6 +2,18 @@
 
 All notable changes to OpenBid Intel are documented here.
 
+## [0.3.0] - 2026-07-12
+
+### Added
+
+- A self-contained, responsive HTML opportunity dashboard generated directly from SQLite.
+- Browser-side search and filters for stage, region, and business line without a web server.
+- Pipeline metrics, explainable score reasons, recommended actions, and safe official-notice links.
+- `openbid dashboard` with score, limit, output, and title options.
+- Automatic HTML dashboard generation in the cross-industry demo.
+- A real dashboard preview image in the README.
+- HTML escaping and unsafe URL protection tests.
+
 ## [0.2.0] - 2026-07-12
 
 ### Added

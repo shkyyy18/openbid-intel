@@ -49,3 +49,26 @@ def test_profile_commands_and_mapping_argument(tmp_path, capsys):
     mapping = tmp_path / "mapping.json"
     mapping.write_text(json.dumps({"title": "Project Name", "url": "Notice Link", "published_at": "Published Date"}), encoding="utf-8")
     assert main(["--db", str(tmp_path / "mapped.db"), "import", str(source), "--mapping", str(mapping)]) == 0
+
+
+def test_demo_and_dashboard_commands_generate_html(tmp_path):
+    root = Path(__file__).resolve().parents[1]
+    database = tmp_path / "demo.db"
+    digest = tmp_path / "demo.md"
+    dashboard = tmp_path / "demo.html"
+    rc = main([
+        "--db", str(database),
+        "--profile", str(root / "config" / "profile.json"),
+        "demo",
+        "--sample", str(root / "samples" / "demo_notices.json"),
+        "--output", str(digest),
+        "--dashboard-output", str(dashboard),
+    ])
+    assert rc == 0
+    assert digest.is_file()
+    assert "Opportunity Dashboard" in dashboard.read_text(encoding="utf-8")
+
+    filtered = tmp_path / "filtered.html"
+    assert main(["--db", str(database), "dashboard", "--min-score", "50", "--output", str(filtered)]) == 0
+    assert filtered.is_file()
+    assert 'id="search"' in filtered.read_text(encoding="utf-8")
