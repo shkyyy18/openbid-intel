@@ -4,7 +4,8 @@ OpenBid Intel favors reusable foundations and trustworthy integrations over a la
 
 ## Near term
 
-- [ ] Publish JSON Schemas for profiles, source configuration, and connector output.
+- [x] Publish JSON Schemas for profiles and source configuration.
+- [ ] Publish a connector-output schema for external process adapters.
 - [x] Add a portable HTML dashboard generated from the local database.
 - [ ] Export qualified opportunities to generic CRM-friendly CSV.
 - [ ] Add scoring calibration reports based on human feedback.

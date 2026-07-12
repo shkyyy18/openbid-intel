@@ -88,6 +88,17 @@ openbid init-profile energy-sustainability --output config/profile.local.json
 
 A profile pack is ordinary JSON, not a locked model. Fork it for a niche market, change product terms, add account aliases, set budget thresholds, or contribute a sanitized pack for a broadly useful sector.
 
+## Validate configuration
+
+Profile and source files are documented with JSON Schema 2020-12 under `schemas/`. The public files include relative `$schema` hints, while `openbid init-profile` writes a stable hosted schema URL so editors such as VS Code can provide completion and inline errors. Validate both active files without installing a third-party package:
+
+```bash
+openbid validate-config
+openbid --profile config/profile.local.json validate-config --only profile
+```
+
+Validation reports exact JSON paths, missing required fields, invalid types and ranges, empty required arrays or strings, and duplicate business-line or source IDs before collection or scoring begins.
+
 ## Import from any export
 
 OpenBid Intel accepts a top-level JSON array, JSON objects containing `notices`, `items`, or `results`, JSONL, and CSV. It recognizes common source headers automatically.

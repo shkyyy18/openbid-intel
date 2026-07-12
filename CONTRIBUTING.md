@@ -8,6 +8,7 @@ $env:PYTHONPATH='src'
 python -m pytest -q
 python -m compileall -q src tests run.py
 python run.py --db data/release_check.db release-check
+python run.py validate-config
 ```
 
 ## High-impact contribution paths

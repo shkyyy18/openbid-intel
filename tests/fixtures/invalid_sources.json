@@ -1,0 +1,1 @@
+{"sources": [{"id": "duplicate", "name": "One", "type": "rss_atom", "url": ""}, {"id": "duplicate", "name": "Two", "type": "rss_atom", "url": "https://example.invalid/feed"}]}

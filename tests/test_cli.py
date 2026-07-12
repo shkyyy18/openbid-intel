@@ -72,3 +72,18 @@ def test_demo_and_dashboard_commands_generate_html(tmp_path):
     assert main(["--db", str(database), "dashboard", "--min-score", "50", "--output", str(filtered)]) == 0
     assert filtered.is_file()
     assert 'id="search"' in filtered.read_text(encoding="utf-8")
+
+
+def test_validate_config_command(tmp_path, capsys):
+    root = Path(__file__).resolve().parents[1]
+    assert main([
+        "--profile", str(root / "config/profile.json"),
+        "--sources", str(root / "config/sources.json"),
+        "validate-config",
+    ]) == 0
+    assert "[OK] profile" in capsys.readouterr().out
+
+    invalid = tmp_path / "invalid.json"
+    invalid.write_text('{"business_lines":[]}', encoding="utf-8")
+    assert main(["--profile", str(invalid), "validate-config", "--only", "profile"]) == 1
+    assert "array must contain at least 1 item" in capsys.readouterr().out

@@ -32,6 +32,10 @@ jobs:
           demo
           --output "${{ runner.temp }}/demo_digest.md"
           --dashboard-output "_site/index.html"
+      - name: Publish configuration schemas
+        run: |
+          mkdir -p _site/schemas
+          cp schemas/*.schema.json _site/schemas/
       - name: Mark site as static
         run: touch _site/.nojekyll
       - uses: actions/configure-pages@v5

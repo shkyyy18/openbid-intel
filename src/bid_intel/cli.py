@@ -8,6 +8,7 @@ from datetime import datetime
 from pathlib import Path
 
 from .collectors import collect_sources
+from .config_validation import validate_config
 from .competitive import (
     analyze_awards, build_relationships, load_profile, render_competitor_report, resolve_buyer_aliases,
     summarize_suppliers, write_competitor_report,
@@ -107,6 +108,9 @@ def build_parser() -> argparse.ArgumentParser:
     release_check = sub.add_parser("release-check", help="run offline repository and configuration checks")
     release_check.add_argument("--root", default=".", help="repository root")
 
+    validate = sub.add_parser("validate-config", help="validate profile and source JSON against bundled schemas")
+    validate.add_argument("--only", choices=("profile", "sources"), help="validate only one configuration file")
+
     sub.add_parser("profiles", help="list built-in industry profile packs")
     init_profile = sub.add_parser("init-profile", help="create an editable profile from a built-in pack")
     init_profile.add_argument("preset", help="profile pack ID; run profiles to list choices")
@@ -128,6 +132,22 @@ def main(argv: list[str] | None = None) -> int:
         for check in checks:
             print(f"[{check['status'].upper()}] {check['check']}: {check['detail']}")
         return 0 if ok else 1
+
+    if args.command == "validate-config":
+        targets = [("profile", args.profile), ("sources", args.sources)]
+        if args.only:
+            targets = [item for item in targets if item[0] == args.only]
+        failed = False
+        for kind, path in targets:
+            errors = validate_config(path, kind)
+            if errors:
+                failed = True
+                print(f"[ERROR] {kind}: {path}")
+                for error in errors:
+                    print(f"  - {error}")
+            else:
+                print(f"[OK] {kind}: {path}")
+        return 1 if failed else 0
 
     if args.command == "profiles":
         for row in list_profiles():

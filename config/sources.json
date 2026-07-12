@@ -1,4 +1,5 @@
 {
+  "$schema": "../schemas/sources.schema.json",
   "request_interval_seconds": 1.0,
   "max_detail_fetches": 30,
   "sources": [

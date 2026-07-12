@@ -38,6 +38,7 @@ def write_profile(profile_id: str, output: str | Path, force: bool = False) -> P
     if target.exists() and not force:
         raise FileExistsError(f"{target} already exists; pass --force to replace it")
     data = load_builtin_profile(profile_id)
+    data = {"$schema": "https://shkyyy18.github.io/openbid-intel/schemas/profile.schema.json", **data}
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return target

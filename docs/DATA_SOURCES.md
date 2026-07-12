@@ -17,6 +17,8 @@ Top-level fields in `config/sources.json`:
 
 A source definition requires an ID, display name, connector type, public URL, notice stage, and enabled flag. A source can override `max_pages` and `history_days`.
 
+`schemas/sources.schema.json` describes these fields for editors and automation. Run `openbid validate-config --only sources` before a scheduled collection. Duplicate IDs, missing required fields, invalid types, and invalid numeric ranges fail validation with exact JSON paths.
+
 ## Collection semantics
 
 - `--max-pages` limits pagination for each source.

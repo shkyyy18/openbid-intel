@@ -7,6 +7,8 @@ import sqlite3
 from pathlib import Path
 from typing import Any
 
+from .config_validation import validate_config
+
 
 REQUIRED_PATHS = (
     "README.md",
@@ -20,6 +22,9 @@ REQUIRED_PATHS = (
     "src/bid_intel/profiles.py",
     "src/bid_intel/dashboard.py",
     "src/bid_intel/connectors.py",
+    "src/bid_intel/config_validation.py",
+    "schemas/profile.schema.json",
+    "schemas/sources.schema.json",
     "src/bid_intel/feed_connector.py",
     "samples/sources.rss.example.json",
     "docs/assets/dashboard-preview.png",
@@ -128,6 +133,13 @@ def run_release_check(
         checks.append(_check("profile JSON", "error", f"{profile_file}: {exc}"))
 
     if profile:
+        profile_schema_errors = validate_config(profile_file, "profile")
+        if profile_schema_errors:
+            ok = False
+        checks.append(_check(
+            "profile schema", "error" if profile_schema_errors else "ok",
+            "; ".join(profile_schema_errors[:5]) if profile_schema_errors else "valid against bundled profile schema",
+        ))
         business_lines = profile.get("business_lines", [])
         valid_lines = [
             row for row in business_lines
@@ -157,6 +169,13 @@ def run_release_check(
         checks.append(_check("sources JSON", "error", f"{sources_file}: {exc}"))
 
     if sources:
+        source_schema_errors = validate_config(sources_file, "sources")
+        if source_schema_errors:
+            ok = False
+        checks.append(_check(
+            "sources schema", "error" if source_schema_errors else "ok",
+            "; ".join(source_schema_errors[:5]) if source_schema_errors else "valid against bundled sources schema",
+        ))
         source_rows = sources.get("sources", [])
         enabled = [row for row in source_rows if isinstance(row, dict) and row.get("enabled", True)] if isinstance(source_rows, list) else []
         enabled_ok = bool(enabled)
