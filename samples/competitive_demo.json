@@ -1,0 +1,37 @@
+{
+  "notices": [
+    {
+      "title": "\u793a\u4f8b\u6280\u672f\u5927\u5b66\u5929\u7ebf\u6d4b\u91cf\u7cfb\u7edf\u4e2d\u6807\u516c\u544a",
+      "url": "sample://award-1",
+      "source": "\u7ade\u4e89\u60c5\u62a5\u6837\u4f8b",
+      "published_at": "2026-07-01",
+      "stage": "\u4e2d\u6807\u516c\u544a",
+      "buyer": "\u793a\u4f8b\u6280\u672f\u5927\u5b66",
+      "region": "\u56db\u5ddd",
+      "award_supplier": "\u6210\u90fd\u7532\u7535\u5b50\u79d1\u6280\u6709\u9650\u516c\u53f8",
+      "award_amount_cny": 3200000
+    },
+    {
+      "title": "\u793a\u4f8b\u6280\u672f\u5927\u5b66\u5fae\u6ce2\u6697\u5ba4\u6539\u9020\u4e2d\u6807\u516c\u544a",
+      "url": "sample://award-2",
+      "source": "\u7ade\u4e89\u60c5\u62a5\u6837\u4f8b",
+      "published_at": "2026-06-01",
+      "stage": "\u4e2d\u6807\u516c\u544a",
+      "buyer": "\u793a\u4f8b\u6280\u672f\u5927\u5b66",
+      "region": "\u56db\u5ddd",
+      "award_supplier": "\u6210\u90fd\u7532\u7535\u5b50\u79d1\u6280\u6709\u9650\u516c\u53f8",
+      "award_amount_cny": 1800000
+    },
+    {
+      "title": "\u793a\u4f8b\u5148\u8fdb\u5b9e\u9a8c\u5ba4\u7535\u78c1\u4eff\u771f\u8f6f\u4ef6\u4e2d\u6807\u516c\u544a",
+      "url": "sample://award-3",
+      "source": "\u7ade\u4e89\u60c5\u62a5\u6837\u4f8b",
+      "published_at": "2026-05-01",
+      "stage": "\u4e2d\u6807\u516c\u544a",
+      "buyer": "\u793a\u4f8b\u5148\u8fdb\u5b9e\u9a8c\u5ba4",
+      "region": "\u56db\u5ddd",
+      "award_supplier": "\u5317\u4eac\u4e59\u79d1\u6280\u6709\u9650\u516c\u53f8",
+      "award_amount_cny": 2600000
+    }
+  ]
+}

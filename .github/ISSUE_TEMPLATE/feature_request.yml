@@ -1,0 +1,24 @@
+name: Feature request
+description: Suggest a product, connector, report, or workflow improvement.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: use_case
+    attributes:
+      label: Sales or research use case
+      description: Describe the decision this feature should improve.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Describe inputs, outputs, and a testable acceptance criterion.
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Data source and compliance
+      description: For a connector request, explain public access, request limits, and whether an official API or export exists.

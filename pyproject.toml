@@ -1,0 +1,36 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "openbid-intel"
+version = "0.1.0"
+description = "Local-first tender intelligence, opportunity scoring, and competitor discovery"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+authors = [{ name = "shkyyy18" }]
+keywords = ["procurement", "tender", "sales-intelligence", "competitive-intelligence", "local-first"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/shkyyy18/openbid-intel"
+Repository = "https://github.com/shkyyy18/openbid-intel"
+Issues = "https://github.com/shkyyy18/openbid-intel/issues"
+
+[project.scripts]
+openbid = "bid_intel.cli:main"
+bid-intel = "bid_intel.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/bid_intel"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
