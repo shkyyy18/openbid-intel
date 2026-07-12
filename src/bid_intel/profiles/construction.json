@@ -1,0 +1,104 @@
+{
+  "buyer_terms": [
+    "agency",
+    "department",
+    "university",
+    "hospital",
+    "company",
+    "group",
+    "institute",
+    "center",
+    "school",
+    "government",
+    "bureau"
+  ],
+  "procurement_terms": [
+    "procurement",
+    "tender",
+    "request for proposal",
+    "rfp",
+    "request for quotation",
+    "rfq",
+    "bid",
+    "purchase",
+    "contract"
+  ],
+  "negative_terms": [
+    "job vacancy",
+    "recruitment",
+    "property sale",
+    "personal loan"
+  ],
+  "stage_weights": {
+    "procurement plan": 8,
+    "request for information": 8,
+    "tender notice": 5,
+    "request for proposal": 5,
+    "request for quotation": 4,
+    "award notice": -12,
+    "cancelled": -18,
+    "correction": -2
+  },
+  "focus_regions": [],
+  "min_budget_cny": 0,
+  "sales_profile": {
+    "name": "Example sales profile",
+    "all_business_lines": true,
+    "focus_regions": [],
+    "minimum_followup_budget_cny": 0,
+    "priority_accounts": []
+  },
+  "meta": {
+    "id": "construction",
+    "title": "Construction and engineering",
+    "description": "Building, renovation, MEP, infrastructure and engineering services."
+  },
+  "business_lines": [
+    {
+      "id": "building_projects",
+      "name": "Building and renovation projects",
+      "base_score": 24,
+      "strong_terms": [
+        "construction project",
+        "building renovation",
+        "general contractor",
+        "fit-out works",
+        "\u5efa\u7b51\u5de5\u7a0b",
+        "\u88c5\u4fee\u6539\u9020",
+        "\u65bd\u5de5\u603b\u627f\u5305"
+      ],
+      "related_terms": [
+        "civil works",
+        "site work",
+        "project management",
+        "design-build",
+        "\u571f\u5efa",
+        "\u9879\u76ee\u7ba1\u7406"
+      ]
+    },
+    {
+      "id": "mep_infrastructure",
+      "name": "MEP and infrastructure",
+      "base_score": 24,
+      "strong_terms": [
+        "HVAC system",
+        "electrical installation",
+        "water treatment",
+        "road engineering",
+        "smart building",
+        "\u6696\u901a\u7a7a\u8c03",
+        "\u5f31\u7535\u5de5\u7a0b",
+        "\u7ed9\u6392\u6c34",
+        "\u667a\u80fd\u697c\u5b87"
+      ],
+      "related_terms": [
+        "fire protection",
+        "lighting",
+        "energy saving",
+        "maintenance",
+        "\u6d88\u9632\u5de5\u7a0b",
+        "\u8282\u80fd\u6539\u9020"
+      ]
+    }
+  ]
+}

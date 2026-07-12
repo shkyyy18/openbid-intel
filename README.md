@@ -4,28 +4,31 @@
 
 # OpenBid Intel
 
-**Turn public tender notices into ranked sales opportunities - locally.**
+**Turn messy tender feeds into ranked opportunities for any industry ? locally.**
 
 [![Tests](https://github.com/shkyyy18/openbid-intel/actions/workflows/tests.yml/badge.svg)](https://github.com/shkyyy18/openbid-intel/actions/workflows/tests.yml)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-3776AB)](https://www.python.org/)
 [![MIT License](https://img.shields.io/badge/license-MIT-22c55e)](LICENSE)
 [![Zero runtime dependencies](https://img.shields.io/badge/runtime_dependencies-0-8b5cf6)](pyproject.toml)
 
-[Quick start](#30-second-quick-start) | [How it works](#how-it-works) | [Customize](#bring-your-own-sales-profile) | [Roadmap](ROADMAP.md)
+[Quick start](#30-second-quick-start) ? [Industry packs](#built-in-industry-packs) ? [Import your data](#import-from-any-export) ? [How it works](#how-it-works) ? [Roadmap](ROADMAP.md)
 
 </div>
 
-Procurement portals are fragmented. Plain keyword alerts create noise. Generic summaries do not know your product lines, target accounts, regions, or deal threshold. **OpenBid Intel** is a local-first pipeline that collects or imports notices, normalizes and deduplicates them, scores each opportunity against your own sales profile, produces an actionable digest, and preserves human feedback.
+Public procurement data is fragmented across portals, spreadsheets, subscriptions, email alerts, and internal exports. Keyword alerts are noisy, while generic summaries do not understand what your team sells.
 
-> OpenBid Intel is an intelligence and triage tool, not a bidding database or legal source of truth. Always verify deadlines, amounts, qualifications, and attachments on the official notice page.
+**OpenBid Intel** is an open-source, local-first toolkit that normalizes tender notices, removes duplicates, ranks opportunities against an editable industry profile, creates an actionable digest, and learns from sales feedback. Start with CSV/JSON exports, choose an industry pack, and add compliant connectors only when you need them.
 
-## Why OpenBid Intel
+> OpenBid Intel is a triage and intelligence tool, not a bidding database or legal source of truth. Verify deadlines, amounts, qualifications, and attachments on the official notice page.
 
-- **Bring your own context:** products, strong and related terms, target accounts, regions, budget floor, negative terms, and stage weights are plain JSON.
-- **Local-first by design:** notices, scores, feedback, and reports stay in your SQLite database unless you explicitly send a digest.
-- **Useful before you add a crawler:** import JSON, JSONL, or CSV from exports and existing workflows.
-- **Built-in China connector:** includes a conservative connector for public list pages on the China Government Procurement Network (CCGP).
-- **Competitor discovery:** mines historical award notices to surface recurring suppliers and buyer-supplier relationships.
+## Why this project exists
+
+- **Useful across industries:** the engine is not tied to one company, region, portal, or product category.
+- **Fast first result:** five built-in profile packs cover common procurement markets.
+- **Bring almost any export:** JSON, JSONL, and CSV imports support common English and Chinese field aliases plus custom mappings.
+- **Explainable ranking:** every score includes matched reasons, risks, and recommended next actions.
+- **Local-first:** notices, profiles, scores, feedback, and reports remain in SQLite unless you explicitly send a digest.
+- **Connector-friendly, not scraper-first:** use exports immediately; add low-frequency public-source adapters with offline fixtures.
 - **Zero runtime dependencies:** the CLI uses only the Python standard library.
 
 ## 30-second quick start
@@ -38,48 +41,99 @@ cd openbid-intel
 python run.py demo
 ```
 
-The demo imports synthetic RF and CAE procurement notices, scores them, and writes `reports/demo_digest.md`.
+The cross-industry demo imports six synthetic notices and ranks the IT, data, AI, and cybersecurity opportunities using the default `it-digital` profile. The report is written to `reports/demo_digest.md`.
 
 Install the CLI locally:
 
 ```bash
 python -m pip install -e .
-openbid demo
-openbid stats
+openbid profiles
+openbid init-profile medical-lab
+openbid --profile config/profile.local.json demo
 ```
 
-Windows users can also run `bid-intel.cmd demo` without changing PowerShell execution policy.
+Windows users can also run `bid-intel.cmd demo` without changing the PowerShell execution policy.
+
+## Built-in industry packs
+
+| Profile pack | Typical opportunities |
+|---|---|
+| `it-digital` | Software, cloud, AI, data platforms, cybersecurity |
+| `medical-lab` | Medical devices, diagnostics, lab and scientific instruments |
+| `construction` | Buildings, renovation, civil works, HVAC and MEP |
+| `marketing-services` | Branding, events, research, consulting and training |
+| `energy-sustainability` | Solar, storage, efficiency, carbon and environmental services |
+
+List and initialize packs from the CLI:
+
+```bash
+openbid profiles
+openbid init-profile energy-sustainability --output config/profile.local.json
+```
+
+A profile pack is ordinary JSON, not a locked model. Fork it for a niche market, change product terms, add account aliases, set budget thresholds, or contribute a sanitized pack for a broadly useful sector.
+
+## Import from any export
+
+OpenBid Intel accepts a top-level JSON array, JSON objects containing `notices`, `items`, or `results`, JSONL, and CSV. It recognizes common source headers automatically.
+
+```bash
+openbid import procurement-export.csv --score
+```
+
+For unusual column names, provide a mapping from canonical OpenBid fields to source fields:
+
+```bash
+openbid import procurement-export.csv \
+  --mapping samples/field_mapping.example.json \
+  --score
+```
+
+Example mapping:
+
+```json
+{
+  "title": "Project Name",
+  "url": "Notice Link",
+  "published_at": "Published Date",
+  "budget_cny": "Estimated Value"
+}
+```
+
+Amount parsing handles values such as `$1.25 million`, `1.2 billion`, `125??`, and `2??`. Canonical fields include `title`, `url`, `source`, `published_at`, `deadline_at`, `stage`, `buyer`, `region`, `budget_cny`, `content`, `award_supplier`, and `award_amount_cny`.
 
 ## What you get
 
 | Capability | Command | Output |
 |---|---|---|
-| Import JSON, JSONL, or CSV | `openbid import notices.json --score` | Normalized, deduplicated records |
+| Discover profile packs | `openbid profiles` | Available industries and descriptions |
+| Create an editable profile | `openbid init-profile it-digital` | Private local JSON configuration |
+| Import exports | `openbid import notices.csv --score` | Normalized and deduplicated records |
 | Collect configured public pages | `openbid collect --score` | New notices and collection run log |
-| Score against your profile | `openbid score --all` | 0-100 score, reasons, risks, actions |
-| Generate opportunity digest | `openbid digest --min-score 50` | Markdown or terminal report |
-| Daily pipeline | `openbid daily --no-push` | Collection, scoring, dated digest |
+| Score against your profile | `openbid score --all` | 0?100 scores, reasons, risks, actions |
+| Generate an opportunity digest | `openbid digest --min-score 50` | Markdown or terminal report |
+| Run a daily pipeline | `openbid daily --no-push` | Collection, scoring, dated digest |
 | Record sales feedback | `openbid feedback 42 VERDICT --note "owner assigned"` | Auditable human decision |
-| Analyze award suppliers | `openbid competitors` | Supplier ranking and history |
-| Build intelligence bundle | `openbid intelligence --no-push` | Digest, account, competitor, quality reports |
-| Verify a release or install | `openbid release-check` | Fully offline checks |
+| Analyze award suppliers | `openbid competitors` | Supplier ranking and buyer history |
+| Build an intelligence bundle | `openbid intelligence --no-push` | Digest, account, supplier and quality reports |
+| Verify an install or release | `openbid release-check` | Fully offline checks |
 
-The feedback verdicts currently use Chinese labels. Run `openbid feedback --help` to see the accepted values.
+Feedback verdicts currently use Chinese labels. Run `openbid feedback --help` to see the accepted values.
 
 ## How it works
 
 ```text
-public pages / JSON / JSONL / CSV
-                |
-                v
- COLLECT -> NORMALIZE -> DEDUPE -> SCORE -> DIGEST -> FEEDBACK
-                |                    |            |
-                +------ SQLite ------+------------+
-                                      |
-                                      +-> supplier and buyer relationships
+CSV / JSON / JSONL / public connectors
+                  |
+                  v
+       NORMALIZE -> DEDUPE -> SCORE -> DIGEST -> FEEDBACK
+                         |       |         |
+                         +---- SQLite -----+
+                                  |
+                                  +-> supplier and buyer relationships
 ```
 
-Scoring is deterministic and explainable. It combines:
+Scoring is deterministic and configurable. It combines:
 
 - strong and related product terms;
 - procurement-stage weighting;
@@ -90,52 +144,47 @@ Scoring is deterministic and explainable. It combines:
 - negative and noise terms;
 - recency and deadline signals.
 
-Each selected notice includes reasons, risks, recommended next actions, and the original URL. Tune the profile without changing Python code.
+No source, region, or niche industry receives a hidden hard-coded advantage. Collection detail priority follows the active source configuration; opportunity ranking follows the active profile.
 
-## Bring your own sales profile
+## Customize without exposing private sales data
 
-Start with `config/profile.example.json` and save your private copy as `config/profile.local.json`:
+The public repository contains generic examples. Keep your real sales configuration in ignored local files:
 
 ```bash
-cp config/profile.example.json config/profile.local.json
-openbid --profile config/profile.local.json demo
+openbid init-profile it-digital --output config/profile.local.json
+openbid --profile config/profile.local.json import notices.csv --score
+openbid --profile config/profile.local.json digest --min-score 50
 ```
 
-A minimal product line looks like this:
+`config/*.local.json`, `.env`, SQLite databases, and generated reports are ignored by Git. Do not commit customer lists, internal pricing, restricted requirements, credentials, or bid strategy.
 
-```json
-{
-  "company": "ExampleCo",
-  "min_budget_cny": 500000,
-  "business_lines": [
-    {
-      "id": "rf_test",
-      "name": "RF test systems",
-      "base_score": 25,
-      "strong_terms": ["antenna measurement system", "near-field measurement"],
-      "related_terms": ["anechoic chamber", "positioner"]
-    }
-  ]
-}
+This separation is intentional:
+
+```text
+Open-source core                 Private local deployment
+-----------------------------    --------------------------------
+normalization and deduplication  customer and account aliases
+explainable scoring engine       niche product vocabulary
+industry profile packs           territory and budget thresholds
+connector interface              internal notes and sales feedback
+sanitized fixtures               private sources and credentials
 ```
-
-`config/*.local.json`, `.env`, SQLite databases, and generated reports are ignored by Git. Keep customer notes, internal pricing, bid strategy, credentials, restricted documents, and non-public requirements outside the repository.
 
 ## Inputs and connectors
 
-JSON and JSONL records may include `title`, `url`, `source`, `published_at`, `deadline_at`, `stage`, `buyer`, `region`, `budget_cny`, `content`, `award_supplier`, and `award_amount_cny`. CSV uses the same headers.
+The bundled connector is a conservative example for selected public list pages on the China Government Procurement Network (CCGP). It is one adapter, not the product boundary. OpenBid Intel does **not** claim complete national or global coverage.
 
-`config/sources.json` enables selected CCGP public list pages. The collector is intentionally conservative: request pacing, page limits, history windows, detail-fetch budgets, and failure isolation are configurable. CI never accesses live websites.
+Public portals change, block automation, and expose incomplete metadata. Add connectors only when ordinary public access and site terms permit it. Never bypass authentication, CAPTCHA, paywalls, or access controls. Prefer official APIs, open-data feeds, RSS, email exports, and manual exports where available.
 
-OpenBid Intel does **not** claim complete national coverage. Public portals change, block automation, or expose incomplete metadata. Add connectors only when ordinary public access and site terms permit it; never bypass authentication, CAPTCHA, or access controls.
+See [Data Sources](docs/DATA_SOURCES.md) and [Public Data Handling](docs/DATA_HANDLING.md).
 
-## Competitor intelligence
+## Supplier and buyer intelligence
 
-Award notices can reveal recurring supplier-buyer relationships. OpenBid Intel extracts award suppliers, ranks frequency and value, filters results through the same product profile, and builds priority-account reports.
+Award notices can reveal recurring supplier-buyer relationships. OpenBid Intel extracts award suppliers, ranks frequency and value, filters results through the active industry profile, and builds priority-account reports.
 
-These are **leads for verification**, not verified competitor classifications. A supplier may be an OEM, reseller, integrator, service provider, or unrelated vendor with a similar name.
+These are leads for verification, not verified competitor classifications. A supplier may be an OEM, reseller, integrator, service provider, or unrelated vendor with a similar name.
 
-## Feishu notifications
+## Optional Feishu notifications
 
 Copy `.env.example` to `.env`, then add a Feishu group-bot webhook and optional signing secret:
 
@@ -153,14 +202,26 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\install_task.ps1 -
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\install_weekly_task.ps1 -DayOfWeek Sunday -At 09:00
 ```
 
-See the [Operations Guide](docs/OPERATIONS.md), [Data Sources](docs/DATA_SOURCES.md), and [Public Data Handling](docs/DATA_HANDLING.md).
+See the [Operations Guide](docs/OPERATIONS.md).
+
+## Good first contributions
+
+The easiest ways to extend OpenBid Intel are intentionally modular:
+
+- contribute a sanitized industry profile pack;
+- add a fixture-tested importer alias or amount format;
+- build a compliant connector for a public procurement source;
+- improve profile schema validation;
+- add a portable HTML dashboard or CRM-friendly export.
+
+Read [CONTRIBUTING.md](CONTRIBUTING.md), open a Discussion for source-compliance questions, and never submit private customer data or live credentials.
 
 ## Project status
 
-OpenBid Intel is an early, usable release. The scoring and local workflow are ready for real validation; source coverage is deliberately small. Contributions with sanitized fixtures, compliant connectors, scoring improvements, and international portal adapters are welcome.
+OpenBid Intel is an early but usable release. Import, deduplication, scoring, reporting, feedback, supplier analysis, and the local workflow are ready for real-world validation. Source coverage remains deliberately small while the project prioritizes trustworthy, reusable foundations over a long list of brittle scrapers.
 
-See [ROADMAP.md](ROADMAP.md) and [CONTRIBUTING.md](CONTRIBUTING.md).
+See [ROADMAP.md](ROADMAP.md).
 
 ## License
 
-MIT (c) 2026 shkyyy18
+MIT ? 2026 shkyyy18

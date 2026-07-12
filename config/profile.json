@@ -1,228 +1,133 @@
 {
-  "company": "Example RF Systems Vendor",
-  "short_name": "ExampleCo",
-  "focus_regions": [],
-  "min_budget_cny": 500000,
-  "business_lines": [
-    {
-      "id": "electromagnetic_measurement",
-      "name": "电磁场测量系统",
-      "base_score": 25,
-      "strong_terms": [
-        "电磁场测量",
-        "近场测量",
-        "远场测量",
-        "紧缩场",
-        "平面近场",
-        "柱面近场",
-        "球面近场",
-        "天线测量系统",
-        "天线测试系统",
-        "天线测试场",
-        "天线方向图",
-        "天线测试转台",
-        "雷达散射截面",
-        "rcs测量",
-        "散射特性测量",
-        "电磁散射特性",
-        "微波暗室",
-        "电波暗室",
-        "紧缩场反射面",
-        "馈源定位",
-        "相控阵校准",
-        "有源相控阵测试"
-      ],
-      "related_terms": [
-        "天线测试",
-        "毫米波测试",
-        "射频测试",
-        "微波测试",
-        "电磁兼容暗室",
-        "测量探头",
-        "矢量网络分析仪",
-        "转台",
-        "伺服控制",
-        "暗室改造",
-        "暗室建设",
-        "测试系统集成"
-      ]
-    },
-    {
-      "id": "cae_simulation",
-      "name": "CAE电磁仿真软件",
-      "base_score": 22,
-      "strong_terms": [
-        "电磁仿真软件",
-        "电磁场仿真",
-        "计算电磁学",
-        "全波仿真",
-        "天线仿真",
-        "阵列天线仿真",
-        "雷达散射截面仿真",
-        "rcs仿真",
-        "复杂电磁环境仿真",
-        "电磁兼容仿真",
-        "国产cae",
-        "电磁仿真平台",
-        "并行电磁计算",
-        "高频电磁仿真",
-        "电磁散射仿真"
-      ],
-      "related_terms": [
-        "cae软件",
-        "工业软件",
-        "科学计算软件",
-        "仿真软件",
-        "多物理场仿真",
-        "建模仿真",
-        "高性能计算",
-        "并行计算",
-        "gpu加速",
-        "求解器",
-        "网格剖分",
-        "信创软件"
-      ]
-    },
-    {
-      "id": "phase_array_calibration",
-      "name": "相控阵校准与测试",
-      "base_score": 25,
-      "strong_terms": [
-        "相控阵校准",
-        "相控阵天线校准",
-        "有源相控阵",
-        "阵列校准",
-        "通道校准",
-        "幅相校准",
-        "相控阵测试",
-        "阵面测试",
-        "天线阵列测试",
-        "波束赋形测试",
-        "多通道幅相测试"
-      ],
-      "related_terms": [
-        "阵列天线",
-        "t/r组件",
-        "tr组件",
-        "多通道射频",
-        "毫米波相控阵",
-        "雷达天线",
-        "波束扫描",
-        "幅相一致性",
-        "校准系统",
-        "测试诊断"
-      ]
-    },
-    {
-      "id": "satellite_ground_test",
-      "name": "卫星与航天器地面测试",
-      "base_score": 20,
-      "strong_terms": [
-        "卫星通信测试",
-        "卫星天线测试",
-        "航天器天线测试",
-        "星载天线测试",
-        "整星测试",
-        "卫星有效载荷测试",
-        "地面测试系统",
-        "卫星互联网测试",
-        "平板卫星天线测试"
-      ],
-      "related_terms": [
-        "卫星互联网",
-        "商业航天",
-        "低轨卫星",
-        "航天器",
-        "卫星载荷",
-        "测控天线",
-        "地面站天线"
-      ]
-    }
-  ],
   "buyer_terms": [
-    "研究所",
-    "研究院",
-    "实验室",
-    "大学",
-    "学院",
-    "航空",
-    "航天",
-    "电子科技",
-    "雷达",
-    "卫星",
-    "通信",
-    "国防",
-    "军工",
-    "船舶",
-    "兵器",
-    "电科",
-    "科学院",
-    "计量院",
-    "检测中心"
+    "agency",
+    "department",
+    "university",
+    "hospital",
+    "company",
+    "group",
+    "institute",
+    "center",
+    "school",
+    "government",
+    "bureau"
   ],
   "procurement_terms": [
-    "采购",
-    "招标",
-    "竞争性磋商",
-    "询价",
-    "谈判",
-    "采购意向",
-    "公开招标",
-    "设备购置",
-    "系统建设",
-    "升级改造"
+    "procurement",
+    "tender",
+    "request for proposal",
+    "rfp",
+    "request for quotation",
+    "rfq",
+    "bid",
+    "purchase",
+    "contract"
   ],
   "negative_terms": [
-    "物业",
-    "食堂",
-    "保洁",
-    "绿化",
-    "办公家具",
-    "车辆租赁",
-    "劳务派遣",
-    "服装",
-    "印刷",
-    "审计服务",
-    "普通监控",
-    "门禁",
-    "消防工程",
-    "空调维修",
-    "土建工程",
-    "装修工程"
+    "job vacancy",
+    "recruitment",
+    "property sale",
+    "personal loan"
   ],
   "stage_weights": {
-    "采购意向": 8,
-    "需求调查": 9,
-    "招标公告": 5,
-    "竞争性磋商": 4,
-    "询价公告": 3,
-    "中标公告": -12,
-    "成交公告": -12,
-    "废标公告": -18,
-    "更正公告": -2
+    "procurement plan": 8,
+    "request for information": 8,
+    "tender notice": 5,
+    "request for proposal": 5,
+    "request for quotation": 4,
+    "award notice": -12,
+    "cancelled": -18,
+    "correction": -2
   },
+  "focus_regions": [],
+  "min_budget_cny": 0,
   "sales_profile": {
     "name": "Example sales profile",
     "all_business_lines": true,
     "focus_regions": [],
-    "minimum_followup_budget_cny": 500000,
-    "priority_accounts": [
-      {
-        "name": "Example Advanced Research Lab",
-        "aliases": [
-          "Example Advanced Research Lab",
-          "Example Research Lab"
-        ],
-        "weight": 20
-      },
-      {
-        "name": "Example Technical University",
-        "aliases": [
-          "Example Technical University",
-          "Example Tech University"
-        ],
-        "weight": 16
-      }
-    ]
-  }
+    "minimum_followup_budget_cny": 0,
+    "priority_accounts": []
+  },
+  "meta": {
+    "id": "it-digital",
+    "title": "IT, software and digital transformation",
+    "description": "Software development, cloud, data, AI, cybersecurity and enterprise systems."
+  },
+  "business_lines": [
+    {
+      "id": "software_delivery",
+      "name": "Software development and enterprise applications",
+      "base_score": 24,
+      "strong_terms": [
+        "software development",
+        "application development",
+        "ERP",
+        "CRM",
+        "business system",
+        "digital platform",
+        "information system",
+        "\u8f6f\u4ef6\u5f00\u53d1",
+        "\u4fe1\u606f\u5316\u5efa\u8bbe",
+        "\u6570\u5b57\u5316\u5e73\u53f0"
+      ],
+      "related_terms": [
+        "system integration",
+        "maintenance service",
+        "mobile app",
+        "workflow",
+        "API",
+        "\u7cfb\u7edf\u96c6\u6210",
+        "\u8fd0\u7ef4\u670d\u52a1"
+      ]
+    },
+    {
+      "id": "data_ai_cloud",
+      "name": "Data, AI and cloud",
+      "base_score": 25,
+      "strong_terms": [
+        "data platform",
+        "artificial intelligence",
+        "machine learning",
+        "large language model",
+        "cloud platform",
+        "data governance",
+        "\u4eba\u5de5\u667a\u80fd",
+        "\u5927\u6a21\u578b",
+        "\u6570\u636e\u6cbb\u7406",
+        "\u4e91\u5e73\u53f0"
+      ],
+      "related_terms": [
+        "analytics",
+        "data warehouse",
+        "GPU",
+        "knowledge base",
+        "private cloud",
+        "\u6570\u636e\u4e2d\u53f0",
+        "\u77e5\u8bc6\u5e93"
+      ]
+    },
+    {
+      "id": "cybersecurity",
+      "name": "Cybersecurity",
+      "base_score": 25,
+      "strong_terms": [
+        "cybersecurity",
+        "security operations center",
+        "penetration testing",
+        "zero trust",
+        "SIEM",
+        "\u7f51\u7edc\u5b89\u5168",
+        "\u7b49\u4fdd\u6d4b\u8bc4",
+        "\u5b89\u5168\u8fd0\u8425\u4e2d\u5fc3"
+      ],
+      "related_terms": [
+        "firewall",
+        "vulnerability scan",
+        "identity management",
+        "audit",
+        "\u9632\u706b\u5899",
+        "\u6f0f\u6d1e\u626b\u63cf"
+      ]
+    }
+  ]
 }

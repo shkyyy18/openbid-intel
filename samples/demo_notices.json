@@ -1,50 +1,74 @@
 [
   {
-    "title": "某研究院天线近场测量系统采购意向",
-    "url": "https://example.invalid/bids/001",
-    "source": "样例数据",
+    "title": "City data platform and AI knowledge assistant RFP",
+    "url": "https://example.invalid/tenders/it-001",
+    "source": "Synthetic demo",
     "published_at": "2026-07-12T09:00:00+08:00",
-    "deadline_at": "2026-08-10T17:00:00+08:00",
-    "stage": "采购意向",
-    "buyer": "某电子技术研究院",
-    "region": "四川",
-    "budget_cny": 7800000,
-    "content": "拟采购一套平面近场天线测量系统，包含微波暗室改造、天线测试转台、射频测试设备、控制软件和系统集成，用于阵列天线方向图与幅相性能测试。"
-  },
-  {
-    "title": "某大学国产CAE工业软件采购项目",
-    "url": "https://example.invalid/bids/002",
-    "source": "样例数据",
-    "published_at": "2026-07-11T14:30:00+08:00",
-    "deadline_at": "2026-07-28T10:00:00+08:00",
-    "stage": "招标公告",
-    "buyer": "某航空航天大学",
-    "region": "陕西",
-    "budget_cny": 2600000,
-    "content": "采购国产CAE仿真软件，包含电磁场仿真、网格剖分、并行计算求解器和高性能计算部署，支持天线与雷达散射截面仿真。"
-  },
-  {
-    "title": "园区物业与绿化服务项目",
-    "url": "https://example.invalid/bids/003",
-    "source": "样例数据",
-    "published_at": "2026-07-12T08:00:00+08:00",
-    "deadline_at": "2026-07-22T10:00:00+08:00",
-    "stage": "招标公告",
-    "buyer": "某产业园",
-    "region": "上海",
-    "budget_cny": 1800000,
-    "content": "采购园区物业、保洁、绿化和日常设施维护服务。"
-  },
-  {
-    "title": "毫米波有源相控阵幅相校准测试系统",
-    "url": "https://example.invalid/bids/004",
-    "source": "样例数据",
-    "published_at": "2026-07-10T11:20:00+08:00",
-    "deadline_at": "2026-07-25T09:30:00+08:00",
-    "stage": "竞争性磋商",
-    "buyer": "某通信技术实验室",
-    "region": "北京",
+    "deadline_at": "2026-08-15T17:00:00+08:00",
+    "stage": "request for proposal",
+    "buyer": "Example City Digital Services Department",
+    "region": "Example Region",
     "budget_cny": 4200000,
-    "content": "建设毫米波有源相控阵天线校准与测试平台，实现多通道幅相测试、波束扫描、阵面诊断和自动化报告。"
+    "content": "Build a data platform, data governance workflow, private cloud deployment and AI knowledge base with API integration."
+  },
+  {
+    "title": "University cybersecurity operations center procurement",
+    "url": "https://example.invalid/tenders/it-002",
+    "source": "Synthetic demo",
+    "published_at": "2026-07-11T10:00:00+08:00",
+    "deadline_at": "2026-08-01T12:00:00+08:00",
+    "stage": "tender notice",
+    "buyer": "Example Technical University",
+    "region": "Example Region",
+    "budget_cny": 2800000,
+    "content": "Procure a security operations center, SIEM, vulnerability scanning, identity management and penetration testing services."
+  },
+  {
+    "title": "Hospital diagnostic imaging equipment purchase",
+    "url": "https://example.invalid/tenders/medical-001",
+    "source": "Synthetic demo",
+    "published_at": "2026-07-10T09:00:00+08:00",
+    "deadline_at": "2026-08-20T17:00:00+08:00",
+    "stage": "tender notice",
+    "buyer": "Example General Hospital",
+    "region": "Example Region",
+    "budget_cny": 9000000,
+    "content": "Purchase medical imaging and diagnostic systems with installation and maintenance."
+  },
+  {
+    "title": "Public building renovation and HVAC upgrade",
+    "url": "https://example.invalid/tenders/build-001",
+    "source": "Synthetic demo",
+    "published_at": "2026-07-09T09:00:00+08:00",
+    "deadline_at": "2026-08-25T17:00:00+08:00",
+    "stage": "tender notice",
+    "buyer": "Example Public Works Agency",
+    "region": "Example Region",
+    "budget_cny": 12000000,
+    "content": "General contractor for building renovation, HVAC system replacement and energy saving works."
+  },
+  {
+    "title": "Solar and battery storage microgrid project",
+    "url": "https://example.invalid/tenders/energy-001",
+    "source": "Synthetic demo",
+    "published_at": "2026-07-08T09:00:00+08:00",
+    "deadline_at": "2026-09-01T17:00:00+08:00",
+    "stage": "request for proposal",
+    "buyer": "Example Energy Authority",
+    "region": "Example Region",
+    "budget_cny": 18000000,
+    "content": "Design and deploy solar photovoltaic generation, battery energy storage and a microgrid energy management system."
+  },
+  {
+    "title": "Office cafeteria operation service",
+    "url": "https://example.invalid/tenders/noise-001",
+    "source": "Synthetic demo",
+    "published_at": "2026-07-07T09:00:00+08:00",
+    "deadline_at": "2026-07-30T17:00:00+08:00",
+    "stage": "tender notice",
+    "buyer": "Example Administration Office",
+    "region": "Example Region",
+    "budget_cny": 700000,
+    "content": "Cafeteria staffing, food supply and daily operation service."
   }
 ]

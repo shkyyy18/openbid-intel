@@ -204,24 +204,27 @@ def enrich_ccgp_detail(notice: Notice, html_text: str) -> Notice:
     return notice
 
 
-INDUSTRY_DETAIL_TERMS = (
-    "\u7535\u78c1", "\u5929\u7ebf", "\u5c04\u9891", "\u5fae\u6ce2", "\u76f8\u63a7\u9635", "\u96f7\u8fbe", "\u4eff\u771f", "\u6d4b\u8bd5", "\u6d4b\u91cf", "\u6821\u51c6", "cae",
-    "\u8fd1\u573a", "\u8fdc\u573a", "\u7d27\u7f29\u573a", "\u6563\u5c04\u6d4b\u91cf", "\u5fae\u6ce2\u6697\u5ba4", "\u536b\u661f", "\u822a\u5929\u5668", "\u76f8\u4f4d", "\u5e45\u76f8", "\u6d4b\u63a7",
+COMMON_DETAIL_TERMS = (
+    "software", "cloud", "data", "security", "medical", "laboratory", "construction",
+    "energy", "consulting", "training", "equipment", "service",
+    "\u8f6f\u4ef6", "\u4e91\u5e73\u53f0", "\u6570\u636e", "\u5b89\u5168", "\u533b\u7597", "\u5b9e\u9a8c\u5ba4",
+    "\u5efa\u7b51", "\u5de5\u7a0b", "\u80fd\u6e90", "\u54a8\u8be2", "\u57f9\u8bad", "\u8bbe\u5907", "\u670d\u52a1",
 )
-SOUTHWEST_TERMS = ("\u56db\u5ddd", "\u91cd\u5e86", "\u4e91\u5357", "\u8d35\u5dde", "\u897f\u85cf")
 
 
 def is_candidate(notice: Notice, priority_terms: list[str] | None = None) -> bool:
+    terms = [term.lower() for term in (priority_terms or []) if term]
+    if not terms:
+        return True
     text = (notice.title + " " + notice.buyer + " " + notice.region).lower()
-    return any(term in text for term in INDUSTRY_DETAIL_TERMS) or any(term in text for term in (priority_terms or []))
+    return any(term in text for term in terms) or any(term in text for term in COMMON_DETAIL_TERMS)
 
 
 def detail_priority(notice: Notice, priority_terms: list[str] | None = None) -> int:
     text = (notice.title + " " + notice.buyer + " " + notice.region).lower()
-    priority_hits = sum(1 for term in (priority_terms or []) if term in text)
-    industry_hits = sum(1 for term in INDUSTRY_DETAIL_TERMS if term in text)
-    southwest_hits = sum(1 for term in SOUTHWEST_TERMS if term in text)
-    return priority_hits * 100 + industry_hits * 10 + southwest_hits * 5
+    priority_hits = sum(1 for term in (priority_terms or []) if term.lower() in text)
+    common_hits = sum(1 for term in COMMON_DETAIL_TERMS if term in text)
+    return priority_hits * 100 + common_hits * 10
 
 
 def _as_datetime(value: str) -> datetime | None:

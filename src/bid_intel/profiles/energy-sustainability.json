@@ -1,0 +1,104 @@
+{
+  "buyer_terms": [
+    "agency",
+    "department",
+    "university",
+    "hospital",
+    "company",
+    "group",
+    "institute",
+    "center",
+    "school",
+    "government",
+    "bureau"
+  ],
+  "procurement_terms": [
+    "procurement",
+    "tender",
+    "request for proposal",
+    "rfp",
+    "request for quotation",
+    "rfq",
+    "bid",
+    "purchase",
+    "contract"
+  ],
+  "negative_terms": [
+    "job vacancy",
+    "recruitment",
+    "property sale",
+    "personal loan"
+  ],
+  "stage_weights": {
+    "procurement plan": 8,
+    "request for information": 8,
+    "tender notice": 5,
+    "request for proposal": 5,
+    "request for quotation": 4,
+    "award notice": -12,
+    "cancelled": -18,
+    "correction": -2
+  },
+  "focus_regions": [],
+  "min_budget_cny": 0,
+  "sales_profile": {
+    "name": "Example sales profile",
+    "all_business_lines": true,
+    "focus_regions": [],
+    "minimum_followup_budget_cny": 0,
+    "priority_accounts": []
+  },
+  "meta": {
+    "id": "energy-sustainability",
+    "title": "Energy and sustainability",
+    "description": "Solar, storage, charging, energy management and environmental services."
+  },
+  "business_lines": [
+    {
+      "id": "clean_energy",
+      "name": "Renewable energy and storage",
+      "base_score": 25,
+      "strong_terms": [
+        "solar photovoltaic",
+        "battery energy storage",
+        "EV charging",
+        "microgrid",
+        "\u5149\u4f0f\u53d1\u7535",
+        "\u50a8\u80fd\u7cfb\u7edf",
+        "\u5145\u7535\u6869",
+        "\u5fae\u7535\u7f51"
+      ],
+      "related_terms": [
+        "inverter",
+        "battery",
+        "energy management system",
+        "demand response",
+        "\u9006\u53d8\u5668",
+        "\u80fd\u6e90\u7ba1\u7406"
+      ]
+    },
+    {
+      "id": "environmental_services",
+      "name": "Environmental and carbon services",
+      "base_score": 23,
+      "strong_terms": [
+        "carbon accounting",
+        "environmental monitoring",
+        "wastewater treatment",
+        "emissions monitoring",
+        "\u78b3\u76d8\u67e5",
+        "\u73af\u5883\u76d1\u6d4b",
+        "\u6c61\u6c34\u5904\u7406",
+        "\u5e9f\u6c14\u76d1\u6d4b"
+      ],
+      "related_terms": [
+        "ESG",
+        "energy audit",
+        "recycling",
+        "consulting",
+        "\u80fd\u6e90\u5ba1\u8ba1",
+        "\u56fa\u5e9f\u5904\u7406"
+      ]
+    }
+  ]
+}

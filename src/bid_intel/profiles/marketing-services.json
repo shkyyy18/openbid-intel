@@ -1,0 +1,107 @@
+{
+  "buyer_terms": [
+    "agency",
+    "department",
+    "university",
+    "hospital",
+    "company",
+    "group",
+    "institute",
+    "center",
+    "school",
+    "government",
+    "bureau"
+  ],
+  "procurement_terms": [
+    "procurement",
+    "tender",
+    "request for proposal",
+    "rfp",
+    "request for quotation",
+    "rfq",
+    "bid",
+    "purchase",
+    "contract"
+  ],
+  "negative_terms": [
+    "job vacancy",
+    "recruitment",
+    "property sale",
+    "personal loan"
+  ],
+  "stage_weights": {
+    "procurement plan": 8,
+    "request for information": 8,
+    "tender notice": 5,
+    "request for proposal": 5,
+    "request for quotation": 4,
+    "award notice": -12,
+    "cancelled": -18,
+    "correction": -2
+  },
+  "focus_regions": [],
+  "min_budget_cny": 0,
+  "sales_profile": {
+    "name": "Example sales profile",
+    "all_business_lines": true,
+    "focus_regions": [],
+    "minimum_followup_budget_cny": 0,
+    "priority_accounts": []
+  },
+  "meta": {
+    "id": "marketing-services",
+    "title": "Marketing and professional services",
+    "description": "Brand, media, events, research, consulting and training services."
+  },
+  "business_lines": [
+    {
+      "id": "marketing_media",
+      "name": "Marketing, media and events",
+      "base_score": 23,
+      "strong_terms": [
+        "marketing campaign",
+        "brand strategy",
+        "media buying",
+        "event management",
+        "public relations",
+        "\u54c1\u724c\u7b56\u5212",
+        "\u5a92\u4f53\u6295\u653e",
+        "\u6d3b\u52a8\u6267\u884c",
+        "\u516c\u5173\u670d\u52a1"
+      ],
+      "related_terms": [
+        "content production",
+        "video production",
+        "exhibition",
+        "social media",
+        "\u5185\u5bb9\u5236\u4f5c",
+        "\u5ba3\u4f20\u7247",
+        "\u5c55\u4f1a"
+      ]
+    },
+    {
+      "id": "consulting_training",
+      "name": "Consulting, research and training",
+      "base_score": 23,
+      "strong_terms": [
+        "management consulting",
+        "market research",
+        "training service",
+        "industry research",
+        "\u7ba1\u7406\u54a8\u8be2",
+        "\u5e02\u573a\u8c03\u7814",
+        "\u57f9\u8bad\u670d\u52a1",
+        "\u884c\u4e1a\u7814\u7a76"
+      ],
+      "related_terms": [
+        "survey",
+        "planning",
+        "evaluation",
+        "workshop",
+        "\u95ee\u5377\u8c03\u67e5",
+        "\u89c4\u5212",
+        "\u8bc4\u4f30"
+      ]
+    }
+  ]
+}

@@ -17,6 +17,8 @@ REQUIRED_PATHS = (
     "pyproject.toml",
     "run.py",
     "bid-intel.cmd",
+    "src/bid_intel/profiles.py",
+    "src/bid_intel/profiles/it-digital.json",
     "scripts/daily.ps1",
     "scripts/weekly_intelligence.ps1",
     "scripts/install_task.ps1",

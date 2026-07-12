@@ -10,9 +10,17 @@ python -m compileall -q src tests run.py
 python run.py --db data/release_check.db release-check
 ```
 
+## High-impact contribution paths
+
+- **Industry profile packs:** add a broadly useful, sanitized pack under `src/bid_intel/profiles/` with tests.
+- **Import compatibility:** add field aliases and amount/date formats backed by small offline fixtures.
+- **Connectors:** implement compliant public-source adapters with a stable interface and offline HTML or JSON fixtures.
+- **Outputs:** add portable dashboards, exports, and integrations that do not require private infrastructure.
+
 ## Contribution rules
 
 - Keep each change focused and add relevant tests.
+- Keep public defaults industry- and region-neutral; niche sales configurations belong in ignored local files.
 - Use minimal, sanitized, offline fixtures for parser tests. CI must not access live websites.
 - Do not commit `data/*.db`, `.env`, webhooks, internal customer material, or private sales notes.
 - Do not fabricate active opportunities, award amounts, competitors, or supplier roles.

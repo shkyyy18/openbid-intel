@@ -1,25 +1,33 @@
 # Roadmap
 
-OpenBid Intel favors a small number of trustworthy capabilities over a large list of brittle scrapers.
+OpenBid Intel favors reusable foundations and trustworthy integrations over a large list of brittle scrapers.
 
 ## Near term
 
-- [ ] Add profile and source configuration JSON Schemas.
+- [ ] Publish JSON Schemas for profiles, source configuration, and connector output.
 - [ ] Add a portable HTML dashboard generated from the local database.
-- [ ] Improve amount, deadline, buyer, and award-supplier extraction with fixture-backed parsers.
 - [ ] Export qualified opportunities to generic CRM-friendly CSV.
-- [ ] Add scoring calibration reports based on user feedback.
+- [ ] Add scoring calibration reports based on human feedback.
+- [ ] Improve amount, deadline, buyer, and award-supplier extraction with fixture-backed parsers.
+
+## Profile pack ecosystem
+
+- [ ] Document profile-pack authoring and review guidelines.
+- [ ] Add broadly useful packs for education, facilities management, logistics, and professional services.
+- [ ] Add profile validation and a command that explains score contributions on sample notices.
+- [ ] Support composing a base industry pack with a private local overlay.
 
 ## Connector ecosystem
 
-- [ ] Document a stable connector interface and fixture contract.
-- [ ] Add compliant adapters for more public procurement portals.
-- [ ] Add RSS and email-export ingestion.
+- [ ] Document a stable connector interface and offline fixture contract.
+- [ ] Add compliant adapters for more public procurement portals and open-data APIs.
+- [ ] Add RSS, email-export, and generic webhook ingestion.
+- [ ] Publish a connector compatibility matrix with last-verified dates.
 
 ## Later
 
 - [ ] Multi-profile scoring for agencies and multi-product teams.
-- [ ] Optional local LLM enrichment behind a strict deterministic baseline.
+- [ ] Optional local LLM enrichment behind a deterministic baseline.
 - [ ] Relationship graph export.
 - [ ] Containerized scheduled deployment.
 

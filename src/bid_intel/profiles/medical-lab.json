@@ -1,0 +1,108 @@
+{
+  "buyer_terms": [
+    "agency",
+    "department",
+    "university",
+    "hospital",
+    "company",
+    "group",
+    "institute",
+    "center",
+    "school",
+    "government",
+    "bureau"
+  ],
+  "procurement_terms": [
+    "procurement",
+    "tender",
+    "request for proposal",
+    "rfp",
+    "request for quotation",
+    "rfq",
+    "bid",
+    "purchase",
+    "contract"
+  ],
+  "negative_terms": [
+    "job vacancy",
+    "recruitment",
+    "property sale",
+    "personal loan"
+  ],
+  "stage_weights": {
+    "procurement plan": 8,
+    "request for information": 8,
+    "tender notice": 5,
+    "request for proposal": 5,
+    "request for quotation": 4,
+    "award notice": -12,
+    "cancelled": -18,
+    "correction": -2
+  },
+  "focus_regions": [],
+  "min_budget_cny": 0,
+  "sales_profile": {
+    "name": "Example sales profile",
+    "all_business_lines": true,
+    "focus_regions": [],
+    "minimum_followup_budget_cny": 0,
+    "priority_accounts": []
+  },
+  "meta": {
+    "id": "medical-lab",
+    "title": "Medical and laboratory equipment",
+    "description": "Medical devices, diagnostic systems, scientific instruments and laboratory services."
+  },
+  "business_lines": [
+    {
+      "id": "medical_devices",
+      "name": "Medical devices and diagnostics",
+      "base_score": 25,
+      "strong_terms": [
+        "medical device",
+        "diagnostic system",
+        "medical imaging",
+        "patient monitor",
+        "clinical laboratory",
+        "\u533b\u7597\u5668\u68b0",
+        "\u533b\u5b66\u5f71\u50cf",
+        "\u8bca\u65ad\u8bbe\u5907",
+        "\u4e34\u5e8a\u68c0\u9a8c"
+      ],
+      "related_terms": [
+        "hospital equipment",
+        "reagent",
+        "maintenance",
+        "consumables",
+        "\u533b\u9662\u8bbe\u5907",
+        "\u8bd5\u5242",
+        "\u8017\u6750"
+      ]
+    },
+    {
+      "id": "scientific_instruments",
+      "name": "Scientific and laboratory instruments",
+      "base_score": 25,
+      "strong_terms": [
+        "scientific instrument",
+        "laboratory instrument",
+        "mass spectrometer",
+        "chromatography",
+        "microscope",
+        "\u79d1\u5b66\u4eea\u5668",
+        "\u5b9e\u9a8c\u5ba4\u8bbe\u5907",
+        "\u8d28\u8c31\u4eea",
+        "\u8272\u8c31\u4eea",
+        "\u663e\u5fae\u955c"
+      ],
+      "related_terms": [
+        "testing equipment",
+        "sample preparation",
+        "calibration",
+        "laboratory renovation",
+        "\u68c0\u6d4b\u8bbe\u5907",
+        "\u6821\u51c6"
+      ]
+    }
+  ]
+}

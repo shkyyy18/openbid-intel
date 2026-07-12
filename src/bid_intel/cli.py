@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import sys
 from datetime import datetime
 from pathlib import Path
 
@@ -15,6 +16,7 @@ from .doctor import run_doctor
 from .importers import load_notices
 from .matcher import Matcher
 from .notifier import load_dotenv, render_feishu_digest, send_feishu_text
+from .profiles import list_profiles, write_profile
 from .report import render_digest, write_digest
 from .release import run_release_check
 from .storage import Store
@@ -34,6 +36,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     import_cmd = sub.add_parser("import", help="导入 JSON/JSONL/CSV 公告")
     import_cmd.add_argument("path")
+    import_cmd.add_argument("--mapping", help="JSON file mapping canonical fields to source column names")
     import_cmd.add_argument("--score", action="store_true", help="导入后立即评分")
 
     collect = sub.add_parser("collect", help="从配置的公开来源采集公告")
@@ -76,7 +79,7 @@ def build_parser() -> argparse.ArgumentParser:
     competitors.add_argument("--history-limit", type=int, default=100, help="\u4e2d\u6807\u660e\u7ec6\u6570\u91cf")
     competitors.add_argument("--output", help="\u5199\u5165 Markdown \u6587\u4ef6")
     competitors.add_argument("--product-line", default="", help="\u6309\u4ea7\u54c1\u7ebf ID \u6216\u540d\u79f0\u7b5b\u9009")
-    competitors.add_argument("--include-unrelated", action="store_true", help="\u5305\u542b\u672a\u547d\u4e2d\u970d\u83b1\u6c83\u4ea7\u54c1\u7ebf\u7684\u4e2d\u6807\u516c\u544a")
+    competitors.add_argument("--include-unrelated", action="store_true", help="include award notices that do not match the active profile")
 
     intelligence = sub.add_parser("intelligence", help="\u5386\u53f2\u91c7\u96c6\u3001\u8bc4\u5206\u5e76\u751f\u6210\u5b8c\u6574\u9500\u552e\u4e0e\u7ade\u4e89\u60c5\u62a5\u5305")
     intelligence.add_argument("--max-pages", type=int, default=10)
@@ -97,6 +100,12 @@ def build_parser() -> argparse.ArgumentParser:
     release_check = sub.add_parser("release-check", help="run offline repository and configuration checks")
     release_check.add_argument("--root", default=".", help="repository root")
 
+    sub.add_parser("profiles", help="list built-in industry profile packs")
+    init_profile = sub.add_parser("init-profile", help="create an editable profile from a built-in pack")
+    init_profile.add_argument("preset", help="profile pack ID; run profiles to list choices")
+    init_profile.add_argument("--output", default="config/profile.local.json")
+    init_profile.add_argument("--force", action="store_true", help="replace an existing output file")
+
     demo = sub.add_parser("demo", help="导入样例、评分并生成报告")
     demo.add_argument("--sample", default="samples/demo_notices.json")
     demo.add_argument("--output", default="reports/demo_digest.md")
@@ -112,10 +121,24 @@ def main(argv: list[str] | None = None) -> int:
             print(f"[{check['status'].upper()}] {check['check']}: {check['detail']}")
         return 0 if ok else 1
 
+    if args.command == "profiles":
+        for row in list_profiles():
+            print(f"{row['id']:<24} {row['title']} - {row['description']}")
+        return 0
+
+    if args.command == "init-profile":
+        try:
+            target = write_profile(args.preset, args.output, force=args.force)
+        except (FileExistsError, ValueError) as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            return 2
+        print(f"Created {target}. Use it with --profile {target}")
+        return 0
+
     store = Store(args.db)
 
     if args.command == "import":
-        imported, updated = _import(store, args.path)
+        imported, updated = _import(store, args.path, args.mapping)
         print(f"导入完成：新增 {imported}，更新 {updated}")
         if args.score:
             print(f"评分完成：{_score(store, args.profile, all_notices=False)} 条")
@@ -214,8 +237,8 @@ def main(argv: list[str] | None = None) -> int:
     return 2
 
 
-def _import(store: Store, path: str) -> tuple[int, int]:
-    return _upsert_notices(store, load_notices(path))
+def _import(store: Store, path: str, mapping_path: str | None = None) -> tuple[int, int]:
+    return _upsert_notices(store, load_notices(path, mapping_path))
 
 
 def _upsert_notices(store: Store, notices) -> tuple[int, int]:

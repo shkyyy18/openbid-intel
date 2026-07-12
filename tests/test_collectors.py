@@ -74,17 +74,16 @@ def test_priority_account_candidate_ranks_above_generic_candidate():
     assert detail_priority(priority, terms) > detail_priority(generic, terms)
 
 
-def test_industry_candidate_terms_are_real_chinese_keywords():
-    notice = Notice(title="\u5929\u7ebf\u8fd1\u573a\u6d4b\u91cf\u7cfb\u7edf", url="u", source="s", published_at="2026-07-01")
-    unrelated = Notice(title="\u529e\u516c\u5bb6\u5177\u91c7\u8d2d", url="v", source="s", published_at="2026-07-01")
+def test_no_priority_terms_keeps_connector_industry_neutral():
+    notice = Notice(title="Office furniture purchase", url="u", source="s", published_at="2026-07-01")
     assert is_candidate(notice)
-    assert not is_candidate(unrelated)
 
 
-def test_southwest_region_increases_detail_priority():
-    sichuan = Notice(title="\u5929\u7ebf\u6d4b\u8bd5", url="1", source="s", published_at="2026-07-01", region="\u56db\u5ddd")
-    beijing = Notice(title="\u5929\u7ebf\u6d4b\u8bd5", url="2", source="s", published_at="2026-07-01", region="\u5317\u4eac")
-    assert detail_priority(sichuan) > detail_priority(beijing)
+def test_configured_terms_control_detail_priority_without_region_bias():
+    terms = ["cloud platform"]
+    matched = Notice(title="Cloud platform services", url="1", source="s", published_at="2026-07-01", region="West")
+    unrelated = Notice(title="Office furniture", url="2", source="s", published_at="2026-07-01", region="East")
+    assert detail_priority(matched, terms) > detail_priority(unrelated, terms)
 
 
 def test_detail_budget_is_global_not_per_source(tmp_path, monkeypatch):
