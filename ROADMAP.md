@@ -13,9 +13,11 @@ OpenBid Intel favors reusable foundations and trustworthy integrations over a la
 
 ## Profile pack ecosystem
 
-- [ ] Document profile-pack authoring and review guidelines.
-- [ ] Add broadly useful packs for education, facilities management, logistics, and professional services.
-- [ ] Add profile validation and a command that explains score contributions on sample notices.
+- [x] Document profile-pack authoring and review guidelines.
+- [x] Add a broadly useful education profile pack.
+- [ ] Add broadly useful packs for facilities management, logistics, and professional services.
+- [x] Add profile and source configuration validation.
+- [ ] Add a command that explains score contributions on sample notices.
 - [ ] Support composing a base industry pack with a private local overlay.
 
 ## Connector ecosystem

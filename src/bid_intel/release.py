@@ -41,6 +41,7 @@ REQUIRED_PATHS = (
     "docs/OPERATIONS.md",
     "docs/DATA_SOURCES.md",
     "docs/DATA_HANDLING.md",
+    "docs/PROFILE_PACKS.md",
     ".github/workflows/tests.yml",
     ".github/workflows/pages.yml",
     ".github/ISSUE_TEMPLATE/bug_report.yml",

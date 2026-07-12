@@ -4,6 +4,8 @@ All notable changes to OpenBid Intel are documented here.
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-07-12
+
 ### Added
 
 - A typed connector protocol and registry for community source adapters.
@@ -16,6 +18,7 @@ All notable changes to OpenBid Intel are documented here.
 - `openbid export` for Excel-friendly CRM CSV files with an explicit safe field allowlist.
 - A general education procurement profile covering digital learning, teaching/lab equipment, and campus services.
 - `openbid init` for validated first-run profile/source setup with safe overwrite behavior and automation flags.
+- Public profile-pack authoring and privacy review guidelines.
 
 ### Changed
 

@@ -28,7 +28,7 @@ Public procurement data is fragmented across portals, spreadsheets, subscription
 ## Why this project exists
 
 - **Useful across industries:** the engine is not tied to one company, region, portal, or product category.
-- **Fast first result:** five built-in profile packs cover common procurement markets.
+- **Fast first result:** six built-in profile packs cover common procurement markets.
 - **Bring almost any export:** JSON, JSONL, and CSV imports support common English and Chinese field aliases plus custom mappings.
 - **Explainable ranking:** every score includes matched reasons, risks, and recommended next actions.
 - **Portable visual dashboard:** generate one self-contained HTML file with search and filters; no server required.
@@ -89,7 +89,7 @@ openbid init-profile energy-sustainability --output config/profile.local.json
 
 `openbid init` validates both generated files, refuses to overwrite them unless `--force` is supplied, and prints the exact import and dashboard commands to run next. In a terminal it offers profile selection; in scripts and redirected sessions it safely defaults to `it-digital`. The optional RSS template is disabled until you replace its placeholder URL and explicitly enable it.
 
-A profile pack is ordinary JSON, not a locked model. Fork it for a niche market, change product terms, add account aliases, set budget thresholds, or contribute a sanitized pack for a broadly useful sector.
+A profile pack is ordinary JSON, not a locked model. Fork it for a niche market, change product terms, add account aliases, set budget thresholds, or contribute a sanitized pack for a broadly useful sector. See [Profile pack authoring](docs/PROFILE_PACKS.md) for the public-pack contract and review checklist.
 
 ## Validate configuration
 
