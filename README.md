@@ -139,11 +139,14 @@ Amount parsing handles values such as `$1.25 million`, `1.2 billion`, `CNY 1.25 
 | Score against your profile | `openbid score --all` | 0-100 scores, reasons, risks, actions |
 | Generate an opportunity digest | `openbid digest --min-score 50` | Markdown or terminal report |
 | Generate an HTML dashboard | `openbid dashboard --min-score 50` | Interactive, self-contained HTML |
+| Export qualified opportunities | `openbid export --min-score 50` | CRM-friendly Excel CSV |
 | Run a daily pipeline | `openbid daily --no-push` | Collection, scoring, dated digest |
 | Record sales feedback | `openbid feedback 42 VERDICT --note "owner assigned"` | Auditable human decision |
 | Analyze award suppliers | `openbid competitors` | Supplier ranking and buyer history |
 | Build an intelligence bundle | `openbid intelligence --no-push` | Digest, account, supplier and quality reports |
 | Verify an install or release | `openbid release-check` | Fully offline checks |
+
+The CSV export uses UTF-8 with a BOM (`utf-8-sig`) so current Excel versions detect non-ASCII text without an import wizard. It contains only stable notice IDs, opportunity fields, score, matched business lines, URL, and latest verdict. Notice content, raw payloads, webhook secrets, and internal feedback notes are excluded by default.
 
 Feedback verdicts currently use Chinese labels. Run `openbid feedback --help` to see the accepted values.
 

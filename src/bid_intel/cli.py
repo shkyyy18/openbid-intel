@@ -15,6 +15,7 @@ from .competitive import (
 )
 from .dashboard import write_dashboard
 from .doctor import run_doctor
+from .exports import write_crm_csv
 from .importers import load_notices
 from .matcher import Matcher
 from .notifier import load_dotenv, render_feishu_digest, send_feishu_text
@@ -61,6 +62,11 @@ def build_parser() -> argparse.ArgumentParser:
     dashboard.add_argument("--limit", type=int, default=200)
     dashboard.add_argument("--output", default="reports/dashboard.html")
     dashboard.add_argument("--title", default="OpenBid Intel")
+
+    export = sub.add_parser("export", help="export qualified opportunities to an Excel-friendly CSV")
+    export.add_argument("--min-score", type=int, default=50)
+    export.add_argument("--limit", type=int, default=1000)
+    export.add_argument("--output", default="reports/opportunities.csv")
 
     push = sub.add_parser("push", help="将商机日报推送到飞书群机器人")
     push.add_argument("--min-score", type=int, default=50)
@@ -197,6 +203,12 @@ def main(argv: list[str] | None = None) -> int:
         rows = store.ranked(limit=args.limit, min_score=args.min_score)
         target = write_dashboard(args.output, rows, title=args.title)
         print(f"Dashboard generated: {target} ({len(rows)} opportunities)")
+        return 0
+
+    if args.command == "export":
+        rows = store.ranked(limit=args.limit, min_score=args.min_score)
+        target = write_crm_csv(args.output, rows)
+        print(f"Exported {len(rows)} opportunities: {target}")
         return 0
 
     if args.command == "push":

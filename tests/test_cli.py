@@ -87,3 +87,21 @@ def test_validate_config_command(tmp_path, capsys):
     invalid.write_text('{"business_lines":[]}', encoding="utf-8")
     assert main(["--profile", str(invalid), "validate-config", "--only", "profile"]) == 1
     assert "array must contain at least 1 item" in capsys.readouterr().out
+
+
+def test_export_command_generates_crm_csv(tmp_path):
+    root = Path(__file__).resolve().parents[1]
+    database = tmp_path / "export.db"
+    assert main([
+        "--db", str(database),
+        "--profile", str(root / "config/profile.json"),
+        "demo",
+        "--sample", str(root / "samples/demo_notices.json"),
+        "--output", str(tmp_path / "demo.md"),
+        "--dashboard-output", str(tmp_path / "demo.html"),
+    ]) == 0
+    target = tmp_path / "qualified.csv"
+    assert main(["--db", str(database), "export", "--min-score", "50", "--output", str(target)]) == 0
+    text = target.read_text(encoding="utf-8-sig")
+    assert "notice_id,title,buyer,region,budget_cny" in text
+    assert "City data platform and AI knowledge assistant RFP" in text

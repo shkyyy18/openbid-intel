@@ -13,6 +13,7 @@ All notable changes to OpenBid Intel are documented here.
 - Public-output privacy checks for both literal and escaped private company terms.
 - JSON Schema 2020-12 documents for profiles and source configuration, published with the live site and included in wheels.
 - `openbid validate-config` with zero-dependency path-aware validation and duplicate-ID checks.
+- `openbid export` for Excel-friendly CRM CSV files with an explicit safe field allowlist.
 
 ### Changed
 
