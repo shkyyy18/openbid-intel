@@ -34,6 +34,7 @@ REQUIRED_PATHS = (
     "src/bid_intel/profiles/it-digital.json",
     "src/bid_intel/profiles/education.json",
     "src/bid_intel/profiles/logistics.json",
+    "src/bid_intel/profiles/facilities-management.json",
     "scripts/daily.ps1",
     "scripts/weekly_intelligence.ps1",
     "scripts/install_task.ps1",

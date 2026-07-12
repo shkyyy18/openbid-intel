@@ -1,0 +1,182 @@
+{
+  "buyer_terms": [
+    "facilities department",
+    "estates department",
+    "property management department",
+    "campus operations",
+    "hospital administration",
+    "municipal facilities department",
+    "commercial property operator",
+    "\u540e\u52e4\u90e8\u95e8",
+    "\u8bbe\u65bd\u7ba1\u7406\u90e8\u95e8",
+    "\u7269\u4e1a\u7ba1\u7406\u90e8\u95e8",
+    "\u56ed\u533a\u8fd0\u8425",
+    "\u5b66\u6821\u540e\u52e4",
+    "\u533b\u9662\u540e\u52e4",
+    "\u5546\u4e1a\u7269\u4e1a\u8fd0\u8425\u65b9"
+  ],
+  "procurement_terms": [
+    "procurement",
+    "tender",
+    "request for proposal",
+    "rfp",
+    "request for quotation",
+    "rfq",
+    "invitation to bid",
+    "framework agreement",
+    "service contract",
+    "\u91c7\u8d2d",
+    "\u62db\u6807",
+    "\u8be2\u4ef7",
+    "\u7ade\u4e89\u6027\u78cb\u5546",
+    "\u6846\u67b6\u534f\u8bae"
+  ],
+  "negative_terms": [
+    "residential property sale",
+    "apartment rental listing",
+    "cleaner recruitment",
+    "housekeeper recruitment",
+    "real estate brokerage",
+    "\u4f4f\u5b85\u9500\u552e",
+    "\u516c\u5bd3\u51fa\u79df",
+    "\u4fdd\u6d01\u5458\u62db\u8058",
+    "\u5bb6\u653f\u4eba\u5458\u62db\u8058",
+    "\u623f\u5730\u4ea7\u7ecf\u7eaa"
+  ],
+  "stage_weights": {
+    "procurement plan": 8,
+    "request for information": 8,
+    "tender notice": 5,
+    "request for proposal": 5,
+    "request for quotation": 4,
+    "award notice": -12,
+    "cancelled": -18,
+    "correction": -2,
+    "\u91c7\u8d2d\u610f\u5411": 8,
+    "\u62db\u6807\u516c\u544a": 5,
+    "\u4e2d\u6807\u516c\u544a": -12
+  },
+  "focus_regions": [],
+  "min_budget_cny": 0,
+  "sales_profile": {
+    "name": "Example facilities-management sales profile",
+    "all_business_lines": true,
+    "focus_regions": [],
+    "minimum_followup_budget_cny": 0,
+    "priority_accounts": []
+  },
+  "meta": {
+    "id": "facilities-management",
+    "title": "Facilities management and building operations",
+    "description": "Property and facility management, environmental services, and building technical maintenance."
+  },
+  "business_lines": [
+    {
+      "id": "property_facility_management",
+      "name": "Property and facility management services",
+      "base_score": 24,
+      "strong_terms": [
+        "integrated facilities management",
+        "property management services",
+        "workplace facilities management",
+        "building operations management",
+        "estate management contract",
+        "campus facilities management",
+        "\u7efc\u5408\u8bbe\u65bd\u7ba1\u7406",
+        "\u7269\u4e1a\u7ba1\u7406\u670d\u52a1",
+        "\u5efa\u7b51\u8fd0\u8425\u7ba1\u7406",
+        "\u56ed\u533a\u8bbe\u65bd\u7ba1\u7406",
+        "\u540e\u52e4\u7efc\u5408\u670d\u52a1",
+        "\u8bbe\u65bd\u8fd0\u7ef4\u670d\u52a1"
+      ],
+      "related_terms": [
+        "facilities help desk",
+        "computer-aided facility management",
+        "space management system",
+        "asset lifecycle management",
+        "preventive maintenance plan",
+        "work order management system",
+        "\u8bbe\u65bd\u670d\u52a1\u53f0",
+        "\u8d44\u4ea7\u7ba1\u7406\u7cfb\u7edf",
+        "\u7a7a\u95f4\u7ba1\u7406",
+        "\u9884\u9632\u6027\u7ef4\u62a4\u8ba1\u5212",
+        "\u8bbe\u5907\u5de1\u68c0",
+        "\u5de5\u5355\u7ba1\u7406\u7cfb\u7edf"
+      ]
+    },
+    {
+      "id": "cleaning_landscaping_waste",
+      "name": "Cleaning, landscaping, pest control, and waste services",
+      "base_score": 23,
+      "strong_terms": [
+        "commercial cleaning services",
+        "janitorial services contract",
+        "landscaping maintenance services",
+        "pest control services",
+        "waste collection services",
+        "building hygiene services",
+        "facade cleaning services",
+        "\u4fdd\u6d01\u670d\u52a1",
+        "\u5546\u4e1a\u6e05\u6d01\u670d\u52a1",
+        "\u56ed\u6797\u7eff\u5316\u517b\u62a4",
+        "\u75c5\u866b\u5bb3\u9632\u6cbb\u670d\u52a1",
+        "\u5783\u573e\u6e05\u8fd0\u670d\u52a1",
+        "\u6d88\u6740\u670d\u52a1",
+        "\u5916\u5899\u6e05\u6d17"
+      ],
+      "related_terms": [
+        "floor care program",
+        "grounds maintenance",
+        "disinfection program",
+        "recycling management",
+        "washroom consumables",
+        "window cleaning",
+        "snow removal services",
+        "\u5730\u9762\u517b\u62a4",
+        "\u7eff\u5730\u7ef4\u62a4",
+        "\u6d88\u6bd2\u65b9\u6848",
+        "\u5783\u573e\u5206\u7c7b",
+        "\u5e9f\u5f03\u7269\u56de\u6536",
+        "\u536b\u751f\u95f4\u8017\u6750",
+        "\u73bb\u7483\u6e05\u6d01"
+      ]
+    },
+    {
+      "id": "building_technical_services",
+      "name": "Building maintenance and technical services",
+      "base_score": 25,
+      "strong_terms": [
+        "HVAC maintenance services",
+        "elevator maintenance contract",
+        "fire alarm maintenance services",
+        "access control maintenance",
+        "building management system maintenance",
+        "electrical maintenance services",
+        "plumbing maintenance services",
+        "\u6696\u901a\u7a7a\u8c03\u7ef4\u62a4",
+        "\u7535\u68af\u7ef4\u4fdd\u670d\u52a1",
+        "\u6d88\u9632\u7cfb\u7edf\u7ef4\u62a4",
+        "\u95e8\u7981\u7cfb\u7edf\u7ef4\u62a4",
+        "\u697c\u5b87\u81ea\u63a7\u7cfb\u7edf\u7ef4\u62a4",
+        "\u914d\u7535\u7cfb\u7edf\u7ef4\u62a4",
+        "\u7ed9\u6392\u6c34\u7ef4\u62a4"
+      ],
+      "related_terms": [
+        "chiller maintenance",
+        "boiler maintenance",
+        "emergency repair service",
+        "fire extinguisher inspection",
+        "generator maintenance",
+        "lift inspection",
+        "energy management system",
+        "\u51b7\u6c34\u673a\u7ec4\u7ef4\u62a4",
+        "\u9505\u7089\u7ef4\u62a4",
+        "\u5e94\u6025\u7ef4\u4fee",
+        "\u706d\u706b\u5668\u68c0\u6d4b",
+        "\u53d1\u7535\u673a\u7ef4\u62a4",
+        "\u7535\u68af\u68c0\u6d4b",
+        "\u80fd\u6e90\u7ba1\u7406\u7cfb\u7edf"
+      ]
+    }
+  ]
+}

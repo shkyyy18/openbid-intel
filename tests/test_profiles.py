@@ -13,7 +13,7 @@ def test_builtin_profiles_cover_popular_sectors():
     ids = {row["id"] for row in list_profiles()}
     assert {
         "it-digital", "construction", "medical-lab", "marketing-services",
-        "energy-sustainability", "education", "logistics",
+        "energy-sustainability", "education", "logistics", "facilities-management",
     } <= ids
 
 
@@ -84,5 +84,44 @@ def test_logistics_profile_matches_distinct_opportunity_types(title, expected_li
         published_at="2026-07-13", stage="tender notice", buyer="Example organization",
     )
     result = Matcher(load_builtin_profile("logistics")).score(notice)
+    assert expected_line in result.business_lines
+    assert result.score >= 30
+
+
+def test_facilities_profile_is_broad_specific_and_neutral():
+    profile = load_builtin_profile("facilities-management")
+    lines = profile["business_lines"]
+    assert {line["id"] for line in lines} == {
+        "property_facility_management",
+        "cleaning_landscaping_waste",
+        "building_technical_services",
+    }
+    assert profile["focus_regions"] == []
+    assert profile["min_budget_cny"] == 0
+    assert profile["sales_profile"]["priority_accounts"] == []
+    assert profile["sales_profile"]["focus_regions"] == []
+    terms = {
+        term.lower()
+        for line in lines
+        for key in ("strong_terms", "related_terms")
+        for term in line[key]
+    }
+    assert not ({"service", "maintenance", "property", "cleaning", "building", "facilities"} & terms)
+
+
+@pytest.mark.parametrize(
+    ("title", "expected_line"),
+    [
+        ("Integrated facilities management tender", "Property and facility management services"),
+        ("Commercial cleaning and landscaping maintenance services", "Cleaning, landscaping, pest control, and waste services"),
+        ("HVAC and elevator maintenance contract", "Building maintenance and technical services"),
+    ],
+)
+def test_facilities_profile_matches_distinct_opportunity_types(title, expected_line):
+    notice = Notice(
+        title=title, url="https://example.invalid/tender", source="fixture",
+        published_at="2026-07-13", stage="tender notice", buyer="Example organization",
+    )
+    result = Matcher(load_builtin_profile("facilities-management")).score(notice)
     assert expected_line in result.business_lines
     assert result.score >= 30

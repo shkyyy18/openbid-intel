@@ -9,6 +9,7 @@ All notable changes to OpenBid Intel are documented here.
 - `openbid explain` with text and JSON score-contribution output for testing a notice without writing to SQLite.
 - Structured score contributions for business-line evidence, buyer terms, stage, region, priority accounts, budget, recency, deadlines, and score caps.
 - A vendor-, buyer-, and region-neutral `logistics` profile pack for transport, warehousing, fulfillment, cold-chain, fleet technology, and logistics equipment.
+- A neutral `facilities-management` profile pack for property operations, environmental services, and building technical maintenance.
 
 ### Changed
 
