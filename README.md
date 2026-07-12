@@ -11,7 +11,7 @@
 [![MIT License](https://img.shields.io/badge/license-MIT-22c55e)](LICENSE)
 [![Zero runtime dependencies](https://img.shields.io/badge/runtime_dependencies-0-8b5cf6)](pyproject.toml)
 
-[Quick start](#30-second-quick-start) | [Dashboard](#portable-html-dashboard) | [Industry packs](#built-in-industry-packs) | [Import your data](#import-from-any-export) | [Roadmap](ROADMAP.md)
+[**Live demo**](https://shkyyy18.github.io/openbid-intel/) | [Quick start](#30-second-quick-start) | [Dashboard](#portable-html-dashboard) | [Industry packs](#built-in-industry-packs) | [Import your data](#import-from-any-export) | [Roadmap](ROADMAP.md)
 
 </div>
 
@@ -20,6 +20,8 @@ Public procurement data is fragmented across portals, spreadsheets, subscription
 **OpenBid Intel** is an open-source, local-first toolkit that normalizes tender notices, removes duplicates, ranks opportunities against an editable industry profile, creates an actionable digest, and learns from sales feedback. Start with CSV/JSON exports, choose an industry pack, and add compliant connectors only when you need them.
 
 > OpenBid Intel is a triage and intelligence tool, not a bidding database or legal source of truth. Verify deadlines, amounts, qualifications, and attachments on the official notice page.
+
+**Try it before installing:** the [live dashboard](https://shkyyy18.github.io/openbid-intel/) is rebuilt from synthetic data on every push to `main`; it contains no private or collected procurement data.
 
 ![OpenBid Intel opportunity dashboard](docs/assets/dashboard-preview.png)
 

@@ -93,7 +93,7 @@ summary {{ cursor:pointer; color:var(--cyan); font-weight:700; }}
 <div class="toolbar"><span><strong id="visibleCount">{len(rows)}</strong> opportunities shown</span><span>Sorted by score</span></div>
 <section class="grid" id="cards">{cards}</section>
 <div class="empty{empty_class}" id="empty">No opportunities match the current filters.</div>
-<footer class="footer">Generated locally by OpenBid Intel. Verify all details on the official notice page before acting.</footer>
+<footer class="footer">Generated locally by <a href="https://github.com/shkyyy18/openbid-intel" target="_blank" rel="noopener noreferrer">OpenBid Intel</a>. Verify all details on the official notice page before acting.</footer>
 </main>
 <script>
 (() => {{
