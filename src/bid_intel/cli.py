@@ -19,6 +19,7 @@ from .exports import write_crm_csv
 from .importers import load_notices
 from .matcher import Matcher
 from .notifier import load_dotenv, render_feishu_digest, send_feishu_text
+from .onboarding import choose_profile, initialize
 from .profiles import list_profiles, write_profile
 from .report import render_digest, write_digest
 from .release import run_release_check
@@ -123,6 +124,14 @@ def build_parser() -> argparse.ArgumentParser:
     init_profile.add_argument("--output", default="config/profile.local.json")
     init_profile.add_argument("--force", action="store_true", help="replace an existing output file")
 
+    init = sub.add_parser("init", help="create a private profile and source configuration for first use")
+    init.add_argument("preset", nargs="?", help="profile pack ID; defaults to it-digital outside an interactive terminal")
+    init.add_argument("--profile-output", default="config/profile.local.json")
+    init.add_argument("--sources-output", default="config/sources.local.json")
+    init.add_argument("--source-template", choices=("empty", "rss"), default="empty")
+    init.add_argument("--non-interactive", action="store_true", help="use defaults without prompting")
+    init.add_argument("--force", action="store_true", help="replace existing output files")
+
     demo = sub.add_parser("demo", help="导入样例、评分并生成报告")
     demo.add_argument("--sample", default="samples/demo_notices.json")
     demo.add_argument("--output", default="reports/demo_digest.md")
@@ -167,6 +176,32 @@ def main(argv: list[str] | None = None) -> int:
             print(f"error: {exc}", file=sys.stderr)
             return 2
         print(f"Created {target}. Use it with --profile {target}")
+        return 0
+
+    if args.command == "init":
+        try:
+            if args.preset:
+                preset = args.preset
+            elif args.non_interactive or not sys.stdin.isatty():
+                preset = "it-digital"
+                print("Using default profile: it-digital")
+            else:
+                preset = choose_profile()
+            profile_target, sources_target = initialize(
+                preset,
+                args.profile_output,
+                args.sources_output,
+                source_kind=args.source_template,
+                force=args.force,
+            )
+        except (FileExistsError, ValueError) as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            return 2
+        print(f"Created and validated {profile_target}")
+        print(f"Created and validated {sources_target}")
+        print("Next steps:")
+        print(f"  openbid --profile {profile_target} --sources {sources_target} import notices.csv --score")
+        print(f"  openbid --profile {profile_target} --sources {sources_target} dashboard")
         return 0
 
     store = Store(args.db)

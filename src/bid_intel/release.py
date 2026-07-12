@@ -24,12 +24,14 @@ REQUIRED_PATHS = (
     "src/bid_intel/connectors.py",
     "src/bid_intel/config_validation.py",
     "src/bid_intel/exports.py",
+    "src/bid_intel/onboarding.py",
     "schemas/profile.schema.json",
     "schemas/sources.schema.json",
     "src/bid_intel/feed_connector.py",
     "samples/sources.rss.example.json",
     "docs/assets/dashboard-preview.png",
     "src/bid_intel/profiles/it-digital.json",
+    "src/bid_intel/profiles/education.json",
     "scripts/daily.ps1",
     "scripts/weekly_intelligence.ps1",
     "scripts/install_task.ps1",
@@ -73,6 +75,8 @@ def _scan_public_tree(root: Path) -> list[str]:
             findings.append(f"{relative}: possible live Feishu webhook")
         if any(term.lower() in text.lower() for term in PRIVATE_PUBLIC_TERMS):
             findings.append(f"{relative}: private company term in public content")
+        if "?" * 3 in text or "\ufffd" in text:
+            findings.append(f"{relative}: possible text-encoding corruption")
     return findings
 
 
@@ -98,7 +102,7 @@ def _find_placeholders(value: Any, location: str = "root") -> list[str]:
     elif isinstance(value, list):
         for index, item in enumerate(value):
             hits.extend(_find_placeholders(item, f"{location}[{index}]"))
-    elif isinstance(value, str) and ("???" in value or "\ufffd" in value):
+    elif isinstance(value, str) and ("?" * 3 in value or "\ufffd" in value):
         hits.append(location)
     return hits
 
@@ -187,9 +191,9 @@ def run_release_check(
     placeholder_hits = _find_placeholders({"profile": profile, "sources": sources})
     if placeholder_hits:
         ok = False
-        checks.append(_check("config placeholders", "error", "found ??? or Unicode replacement character at: " + ", ".join(placeholder_hits[:10])))
+        checks.append(_check("config placeholders", "error", "found repeated question marks or Unicode replacement character at: " + ", ".join(placeholder_hits[:10])))
     else:
-        checks.append(_check("config placeholders", "ok", "no ??? or Unicode replacement characters"))
+        checks.append(_check("config placeholders", "ok", "no repeated question marks or Unicode replacement characters"))
 
     db_file = _resolve(root, db_path)
     try:

@@ -105,3 +105,38 @@ def test_export_command_generates_crm_csv(tmp_path):
     text = target.read_text(encoding="utf-8-sig")
     assert "notice_id,title,buyer,region,budget_cny" in text
     assert "City data platform and AI knowledge assistant RFP" in text
+
+
+def test_init_creates_valid_private_config_pair(tmp_path, capsys):
+    profile = tmp_path / "profile.local.json"
+    sources = tmp_path / "sources.local.json"
+    rc = main([
+        "init", "education",
+        "--profile-output", str(profile),
+        "--sources-output", str(sources),
+        "--source-template", "rss",
+        "--non-interactive",
+    ])
+    assert rc == 0
+    assert json.loads(profile.read_text(encoding="utf-8"))["meta"]["id"] == "education"
+    source_data = json.loads(sources.read_text(encoding="utf-8"))
+    assert source_data["sources"][0]["type"] == "rss_atom"
+    assert source_data["sources"][0]["enabled"] is False
+    output = capsys.readouterr().out
+    assert "Created and validated" in output
+    assert "import notices.csv --score" in output
+
+
+def test_init_refuses_to_overwrite_either_config(tmp_path):
+    profile = tmp_path / "profile.local.json"
+    sources = tmp_path / "sources.local.json"
+    sources.write_text("keep me", encoding="utf-8")
+    rc = main([
+        "init", "it-digital",
+        "--profile-output", str(profile),
+        "--sources-output", str(sources),
+        "--non-interactive",
+    ])
+    assert rc == 2
+    assert not profile.exists()
+    assert sources.read_text(encoding="utf-8") == "keep me"

@@ -7,7 +7,7 @@ def test_crm_export_is_excel_friendly_and_quotes_non_ascii(tmp_path):
     target = write_crm_csv(tmp_path / "opportunities.csv", [{
         "id": 42,
         "title": 'Campus "AI", platform',
-        "buyer": "????",
+        "buyer": "\u67d0\u5927\u5b66",
         "region": "??",
         "budget_cny": 1200000,
         "stage": "request for proposal",
@@ -28,7 +28,7 @@ def test_crm_export_is_excel_friendly_and_quotes_non_ascii(tmp_path):
     assert tuple(rows[0]) == CRM_FIELDS
     assert rows[0]["notice_id"] == "42"
     assert rows[0]["title"] == 'Campus "AI", platform'
-    assert rows[0]["buyer"] == "????"
+    assert rows[0]["buyer"] == "\u67d0\u5927\u5b66"
     assert rows[0]["business_lines"] == "Data, AI and cloud; Cybersecurity"
     assert rows[0]["deadline_at"] == ""
     assert "content" not in rows[0]

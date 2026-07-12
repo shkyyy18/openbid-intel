@@ -1,0 +1,159 @@
+{
+  "buyer_terms": [
+    "school",
+    "university",
+    "college",
+    "academy",
+    "education department",
+    "training center",
+    "library",
+    "学校",
+    "大学",
+    "学院",
+    "教育局",
+    "培训中心",
+    "图书馆"
+  ],
+  "procurement_terms": [
+    "procurement",
+    "tender",
+    "request for proposal",
+    "rfp",
+    "request for quotation",
+    "rfq",
+    "bid",
+    "purchase",
+    "contract",
+    "采购",
+    "招标",
+    "比选",
+    "询价"
+  ],
+  "negative_terms": [
+    "student admission",
+    "job vacancy",
+    "recruitment",
+    "scholarship application",
+    "property sale",
+    "招生",
+    "招聘",
+    "奖学金申请"
+  ],
+  "stage_weights": {
+    "procurement plan": 8,
+    "request for information": 8,
+    "tender notice": 5,
+    "request for proposal": 5,
+    "request for quotation": 4,
+    "award notice": -12,
+    "cancelled": -18,
+    "correction": -2,
+    "采购意向": 8,
+    "招标公告": 5,
+    "中标公告": -12
+  },
+  "focus_regions": [],
+  "min_budget_cny": 0,
+  "sales_profile": {
+    "name": "Example education sales profile",
+    "all_business_lines": true,
+    "focus_regions": [],
+    "minimum_followup_budget_cny": 0,
+    "priority_accounts": []
+  },
+  "meta": {
+    "id": "education",
+    "title": "Education and campus procurement",
+    "description": "Digital learning, teaching and laboratory equipment, and campus services or infrastructure."
+  },
+  "business_lines": [
+    {
+      "id": "digital_learning",
+      "name": "Education technology and digital learning",
+      "base_score": 25,
+      "strong_terms": [
+        "learning management system",
+        "digital classroom",
+        "smart classroom",
+        "online learning platform",
+        "education cloud",
+        "campus network",
+        "教学平台",
+        "智慧教室",
+        "在线学习平台",
+        "教育云",
+        "校园网"
+      ],
+      "related_terms": [
+        "course platform",
+        "lecture capture",
+        "interactive display",
+        "virtual simulation",
+        "student information system",
+        "课程平台",
+        "录播系统",
+        "交互式显示",
+        "虚拟仿真",
+        "教务系统"
+      ]
+    },
+    {
+      "id": "teaching_lab_equipment",
+      "name": "Teaching and laboratory equipment",
+      "base_score": 24,
+      "strong_terms": [
+        "teaching equipment",
+        "laboratory equipment",
+        "training equipment",
+        "scientific instrument",
+        "simulation equipment",
+        "教学设备",
+        "实验室设备",
+        "实训设备",
+        "科学仪器",
+        "仿真设备"
+      ],
+      "related_terms": [
+        "classroom equipment",
+        "lab renovation",
+        "instrument maintenance",
+        "consumables",
+        "workstation",
+        "教室设备",
+        "实验室改造",
+        "仪器维护",
+        "耗材",
+        "工作站"
+      ]
+    },
+    {
+      "id": "campus_services_infrastructure",
+      "name": "Campus services and infrastructure",
+      "base_score": 22,
+      "strong_terms": [
+        "campus renovation",
+        "campus security",
+        "energy management",
+        "student accommodation",
+        "library system",
+        "校园改造",
+        "校园安防",
+        "能源管理",
+        "学生宿舍",
+        "图书馆系统"
+      ],
+      "related_terms": [
+        "facility management",
+        "access control",
+        "catering service",
+        "sports facility",
+        "air conditioning",
+        "物业管理",
+        "门禁",
+        "餐饮服务",
+        "体育设施",
+        "空调"
+      ]
+    }
+  ]
+}

@@ -52,9 +52,8 @@ Install the CLI locally:
 
 ```bash
 python -m pip install -e .
-openbid profiles
-openbid init-profile medical-lab
-openbid --profile config/profile.local.json demo
+openbid init education --source-template rss
+openbid --profile config/profile.local.json --sources config/sources.local.json demo
 ```
 
 Windows users can also run `bid-intel.cmd demo` without changing the PowerShell execution policy.
@@ -78,13 +77,17 @@ The file works offline and can be opened in any modern browser. It includes full
 | `construction` | Buildings, renovation, civil works, HVAC and MEP |
 | `marketing-services` | Branding, events, research, consulting and training |
 | `energy-sustainability` | Solar, storage, efficiency, carbon and environmental services |
+| `education` | Digital learning, teaching/lab equipment, campus services and infrastructure |
 
-List and initialize packs from the CLI:
+Create both ignored local configuration files in one step, or list and initialize only a profile pack:
 
 ```bash
+openbid init education --source-template rss
 openbid profiles
 openbid init-profile energy-sustainability --output config/profile.local.json
 ```
+
+`openbid init` validates both generated files, refuses to overwrite them unless `--force` is supplied, and prints the exact import and dashboard commands to run next. In a terminal it offers profile selection; in scripts and redirected sessions it safely defaults to `it-digital`. The optional RSS template is disabled until you replace its placeholder URL and explicitly enable it.
 
 A profile pack is ordinary JSON, not a locked model. Fork it for a niche market, change product terms, add account aliases, set budget thresholds, or contribute a sanitized pack for a broadly useful sector.
 
@@ -181,8 +184,8 @@ No source, region, or niche industry receives a hidden hard-coded advantage. Col
 The public repository contains generic examples. Keep your real sales configuration in ignored local files:
 
 ```bash
-openbid init-profile it-digital --output config/profile.local.json
-openbid --profile config/profile.local.json import notices.csv --score
+openbid init it-digital
+openbid --profile config/profile.local.json --sources config/sources.local.json import notices.csv --score
 openbid --profile config/profile.local.json digest --min-score 50
 ```
 
