@@ -20,7 +20,7 @@ OpenBid Intel favors reusable foundations and trustworthy integrations over a la
 - [ ] Add a broadly useful professional-services profile pack.
 - [x] Add profile and source configuration validation.
 - [x] Add a command that explains score contributions on sample notices.
-- [ ] Support composing a base industry pack with a private local overlay.
+- [x] Support composing a base industry pack with private local overlays.
 
 ## Connector ecosystem
 

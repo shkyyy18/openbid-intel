@@ -1,0 +1,29 @@
+﻿{
+  "sales_profile": {
+    "name": "Synthetic local sales profile",
+    "focus_regions": [
+      "Example Region"
+    ],
+    "minimum_followup_budget_cny": 1000000,
+    "priority_accounts": [
+      {
+        "name": "Example University",
+        "aliases": [
+          "Example University Procurement Office"
+        ],
+        "weight": 25
+      }
+    ]
+  },
+  "buyer_terms": [
+    "research university"
+  ],
+  "business_lines": [
+    {
+      "id": "digital_learning",
+      "strong_terms": [
+        "synthetic learning appliance"
+      ]
+    }
+  ]
+}

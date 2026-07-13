@@ -12,6 +12,40 @@ openbid --profile config/profile.local.json validate-config --only profile
 
 Built-in packs live under `src/bid_intel/profiles/`. Each file is ordinary JSON and is validated against `schemas/profile.schema.json`.
 
+## Compose a public pack with private overlays
+
+You do not need to copy a complete public pack to add local sales rules. Create a partial JSON overlay under the ignored `config/*.local.json` path and layer it on the public base:
+
+```bash
+cp samples/profile.overlay.example.json config/profile.local.json
+openbid \
+  --profile src/bid_intel/profiles/education.json \
+  --profile-overlay config/profile.local.json \
+  validate-config --only profile
+```
+
+The same global option works with `score`, `explain`, `daily`, `competitors`, `quality`, `demo`, and `intelligence`. It can be repeated; overlays apply left to right:
+
+```bash
+openbid \
+  --profile src/bid_intel/profiles/education.json \
+  --profile-overlay config/team.local.json \
+  --profile-overlay config/territory.local.json \
+  score --all
+```
+
+Merge behavior is deterministic:
+
+- dictionaries merge recursively;
+- scalar values in the later overlay replace earlier values;
+- scalar lists append in order and remove duplicates;
+- `business_lines` entries merge by `id`;
+- `sales_profile.priority_accounts` entries merge by `name`;
+- an explicit empty list clears the inherited list;
+- multiple overlays apply from left to right.
+
+An overlay may contain only the fields it changes. The final composed profile must satisfy the full bundled profile schema. Errors identify the base and overlay chain but normal reports and `explain --json` do not expose overlay configuration metadata or paths; matched terms can still appear as normal scoring evidence. Never commit a real overlay; the tracked sample uses synthetic names and values only.
+
 ## Required business-line fields
 
 Every entry in `business_lines` needs:

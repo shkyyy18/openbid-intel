@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
@@ -9,12 +8,6 @@ from typing import Any
 UNKNOWN = "\u5f85\u786e\u8ba4"
 SEP = "\u3001"
 ROLE_UNKNOWN = "\u5f85\u6838\u9a8c"
-
-
-def load_profile(path: str | Path) -> dict[str, Any]:
-    with Path(path).open("r", encoding="utf-8-sig") as handle:
-        return json.load(handle)
-
 
 
 def resolve_buyer_aliases(profile: dict[str, Any], buyer_query: str) -> tuple[str, list[str]]:

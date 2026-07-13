@@ -10,6 +10,8 @@ All notable changes to OpenBid Intel are documented here.
 - Structured score contributions for business-line evidence, buyer terms, stage, region, priority accounts, budget, recency, deadlines, and score caps.
 - A vendor-, buyer-, and region-neutral `logistics` profile pack for transport, warehousing, fulfillment, cold-chain, fleet technology, and logistics equipment.
 - A neutral `facilities-management` profile pack for property operations, environmental services, and building technical maintenance.
+- Repeatable `--profile-overlay` composition for layering ignored private sales rules onto public industry packs.
+- A synthetic partial-overlay example with deterministic merge, validation, and privacy guidance.
 
 ### Changed
 

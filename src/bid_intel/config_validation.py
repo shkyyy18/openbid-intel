@@ -21,6 +21,13 @@ def load_schema(kind: str) -> dict[str, Any]:
     return json.loads(resource.read_text(encoding="utf-8"))
 
 
+def validate_config_instance(instance: Any, kind: str) -> list[str]:
+    errors = validate_instance(instance, load_schema(kind))
+    if not errors:
+        errors.extend(_semantic_errors(instance, kind))
+    return errors
+
+
 def validate_config(path: str | Path, kind: str) -> list[str]:
     target = Path(path)
     try:
@@ -29,10 +36,7 @@ def validate_config(path: str | Path, kind: str) -> list[str]:
         return [f"$: file not found: {target}"]
     except json.JSONDecodeError as exc:
         return [f"$: invalid JSON at line {exc.lineno}, column {exc.colno}: {exc.msg}"]
-    errors = validate_instance(instance, load_schema(kind))
-    if not errors:
-        errors.extend(_semantic_errors(instance, kind))
-    return errors
+    return validate_config_instance(instance, kind)
 
 
 def validate_instance(instance: Any, schema: dict[str, Any], path: str = "$") -> list[str]:

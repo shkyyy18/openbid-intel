@@ -93,6 +93,20 @@ openbid init-profile energy-sustainability --output config/profile.local.json
 
 A profile pack is ordinary JSON, not a locked model. Fork it for a niche market, change product terms, add account aliases, set budget thresholds, or contribute a sanitized pack for a broadly useful sector. See [Profile pack authoring](docs/PROFILE_PACKS.md) for the public-pack contract and review checklist.
 
+### Keep private rules in a local overlay
+
+Use a built-in public pack directly and layer private accounts, territories, budget rules, or product phrases from an ignored partial JSON file:
+
+```bash
+cp samples/profile.overlay.example.json config/profile.local.json
+openbid \
+  --profile src/bid_intel/profiles/education.json \
+  --profile-overlay config/profile.local.json \
+  explain --title "Synthetic learning appliance procurement"
+```
+
+Repeat `--profile-overlay` to apply team and territory overlays from left to right. Dictionaries merge recursively; business lines merge by `id`; priority accounts merge by `name`; scalar lists are appended and de-duplicated. An explicit empty list clears the inherited list. The composed result is validated before scoring, while overlay configuration metadata and paths are not added to reports or score explanations; matched terms can still appear as normal scoring evidence. Keep overlays under `config/*.local.json`, which is ignored by Git.
+
 ## Validate configuration
 
 Profile and source files are documented with JSON Schema 2020-12 under `schemas/`. The public files include relative `$schema` hints, while `openbid init-profile` writes a stable hosted schema URL so editors such as VS Code can provide completion and inline errors. Validate both active files without installing a third-party package:

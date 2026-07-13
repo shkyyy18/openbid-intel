@@ -9,21 +9,35 @@ from pathlib import Path
 
 from .collectors import load_sources
 from .notifier import load_dotenv
+from .profiles import ProfileConfigError, load_composed_profile
 
 
-def run_doctor(db_path: str | Path, profile_path: str | Path, sources_path: str | Path) -> tuple[bool, list[dict[str, str]]]:
+def run_doctor(
+    db_path: str | Path,
+    profile_path: str | Path,
+    sources_path: str | Path,
+    profile_overlays: list[str | Path] | None = None,
+) -> tuple[bool, list[dict[str, str]]]:
     load_dotenv()
     checks: list[dict[str, str]] = []
     ok = True
 
-    for name, path in (("企业画像", Path(profile_path)), ("来源配置", Path(sources_path))):
-        try:
-            with path.open("r", encoding="utf-8-sig") as handle:
-                json.load(handle)
-            checks.append({"check": name, "status": "ok", "detail": str(path)})
-        except Exception as exc:
-            ok = False
-            checks.append({"check": name, "status": "error", "detail": str(exc)})
+    try:
+        load_composed_profile(profile_path, profile_overlays)
+        overlay_detail = f" + {len(profile_overlays)} overlay(s)" if profile_overlays else ""
+        checks.append({"check": "Profile", "status": "ok", "detail": f"{profile_path}{overlay_detail}"})
+    except ProfileConfigError as exc:
+        ok = False
+        checks.append({"check": "Profile", "status": "error", "detail": str(exc)})
+
+    source_path = Path(sources_path)
+    try:
+        with source_path.open("r", encoding="utf-8-sig") as handle:
+            json.load(handle)
+        checks.append({"check": "Sources", "status": "ok", "detail": str(source_path)})
+    except Exception as exc:
+        ok = False
+        checks.append({"check": "Sources", "status": "error", "detail": str(exc)})
 
     try:
         db = Path(db_path)

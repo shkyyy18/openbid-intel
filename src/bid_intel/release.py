@@ -30,6 +30,8 @@ REQUIRED_PATHS = (
     "schemas/sources.schema.json",
     "src/bid_intel/feed_connector.py",
     "samples/sources.rss.example.json",
+    "samples/profile.overlay.example.json",
+    "tests/test_profile_overlays.py",
     "docs/assets/dashboard-preview.png",
     "src/bid_intel/profiles/it-digital.json",
     "src/bid_intel/profiles/education.json",

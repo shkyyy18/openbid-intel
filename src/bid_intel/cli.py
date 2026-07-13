@@ -10,7 +10,7 @@ from pathlib import Path
 from .collectors import collect_sources
 from .config_validation import validate_config
 from .competitive import (
-    analyze_awards, build_relationships, load_profile, render_competitor_report, resolve_buyer_aliases,
+    analyze_awards, build_relationships, render_competitor_report, resolve_buyer_aliases,
     summarize_suppliers, write_competitor_report,
 )
 from .dashboard import write_dashboard
@@ -22,7 +22,7 @@ from .matcher import Matcher
 from .models import Notice, parse_datetime
 from .notifier import load_dotenv, render_feishu_digest, send_feishu_text
 from .onboarding import choose_profile, initialize
-from .profiles import list_profiles, write_profile
+from .profiles import ProfileConfigError, list_profiles, load_composed_profile, write_profile
 from .report import render_digest, write_digest
 from .release import run_release_check
 from .storage import Store
@@ -38,6 +38,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--db", default=str(DEFAULT_DB), help="SQLite 数据库路径")
     parser.add_argument("--profile", default=str(DEFAULT_PROFILE), help="企业匹配画像 JSON")
     parser.add_argument("--sources", default=str(DEFAULT_SOURCES), help="数据来源配置 JSON")
+    parser.add_argument(
+        "--profile-overlay", action="append", default=[], metavar="PATH",
+        help="private partial profile JSON layered on --profile; repeat to apply left-to-right",
+    )
     sub = parser.add_subparsers(dest="command", required=True)
 
     import_cmd = sub.add_parser("import", help="导入 JSON/JSONL/CSV 公告")
@@ -168,14 +172,22 @@ def main(argv: list[str] | None = None) -> int:
             targets = [item for item in targets if item[0] == args.only]
         failed = False
         for kind, path in targets:
-            errors = validate_config(path, kind)
+            if kind == "profile" and args.profile_overlay:
+                try:
+                    load_composed_profile(path, args.profile_overlay)
+                    errors = []
+                except ProfileConfigError as exc:
+                    errors = exc.errors
+            else:
+                errors = validate_config(path, kind)
+            label = path if kind != "profile" or not args.profile_overlay else f"{path} + {len(args.profile_overlay)} overlay(s)"
             if errors:
                 failed = True
-                print(f"[ERROR] {kind}: {path}")
+                print(f"[ERROR] {kind}: {label}")
                 for error in errors:
                     print(f"  - {error}")
             else:
-                print(f"[OK] {kind}: {path}")
+                print(f"[OK] {kind}: {label}")
         return 1 if failed else 0
 
     if args.command == "profiles":
@@ -218,13 +230,19 @@ def main(argv: list[str] | None = None) -> int:
         print(f"  openbid --profile {profile_target} --sources {sources_target} dashboard")
         return 0
 
-    if args.command == "explain":
-        errors = validate_config(args.profile, "profile")
-        if errors:
-            print(f"error: invalid profile {args.profile}", file=sys.stderr)
-            for error in errors:
+    needs_profile = args.command in {"explain", "score", "daily", "competitors", "intelligence", "quality", "demo"}
+    needs_profile = needs_profile or (args.command in {"import", "collect"} and args.score)
+    profile = None
+    if needs_profile:
+        try:
+            profile = load_composed_profile(args.profile, args.profile_overlay)
+        except ProfileConfigError as exc:
+            print(f"error: invalid profile configuration {exc.source}", file=sys.stderr)
+            for error in exc.errors:
                 print(f"  - {error}", file=sys.stderr)
             return 2
+
+    if args.command == "explain":
         date_values = (
             ("published-at", args.published_at),
             ("deadline-at", args.deadline_at),
@@ -239,7 +257,7 @@ def main(argv: list[str] | None = None) -> int:
             deadline_at=args.deadline_at, stage=args.stage, buyer=args.buyer,
             region=args.region, budget_cny=args.budget_cny, content=args.content,
         )
-        result = Matcher.from_file(args.profile).score(notice, now=parse_datetime(args.as_of))
+        result = Matcher(profile).score(notice, now=parse_datetime(args.as_of))
         payload = build_explanation(notice, result, args.profile)
         print(render_explanation_json(payload) if args.json else render_explanation(payload), end="")
         return 0
@@ -250,18 +268,18 @@ def main(argv: list[str] | None = None) -> int:
         imported, updated = _import(store, args.path, args.mapping)
         print(f"导入完成：新增 {imported}，更新 {updated}")
         if args.score:
-            print(f"评分完成：{_score(store, args.profile, all_notices=False)} 条")
+            print(f"评分完成：{_score(store, profile, all_notices=False)} 条")
         return 0
 
     if args.command == "collect":
         summary = _collect(store, args.sources, not args.no_details, args.max_details, args.max_pages, args.history_days)
         _print_collection(summary)
         if args.score:
-            print(f"评分完成：{_score(store, args.profile, all_notices=False)} 条")
+            print(f"评分完成：{_score(store, profile, all_notices=False)} 条")
         return 1 if summary["failed_sources"] else 0
 
     if args.command == "score":
-        count = _score(store, args.profile, all_notices=args.all)
+        count = _score(store, profile, all_notices=args.all)
         print(f"评分完成：{count} 条")
         return 0
 
@@ -294,7 +312,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.command == "daily":
         summary = _collect(store, args.sources, not args.no_details, args.max_details, args.max_pages, args.history_days)
-        scored = _score(store, args.profile, all_notices=False)
+        scored = _score(store, profile, all_notices=False)
         rows = store.ranked(limit=args.limit, min_score=args.min_score)
         stamp = datetime.now().astimezone().strftime("%Y%m%d")
         target = write_digest(Path(args.output_dir) / f"digest_{stamp}.md", rows)
@@ -313,7 +331,6 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.command == "competitors":
-        profile = load_profile(args.profile)
         buyer_label, buyer_aliases = resolve_buyer_aliases(profile, args.buyer)
         raw_history = store.award_history(limit=args.history_limit, buyer_queries=buyer_aliases)
         history = analyze_awards(raw_history, profile, relevant_only=not args.include_unrelated, product_line=args.product_line)
@@ -328,10 +345,10 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.command == "intelligence":
-        return _run_intelligence(store, args)
+        return _run_intelligence(store, args, profile)
 
     if args.command == "quality":
-        print(json.dumps(_quality_snapshot(store, load_profile(args.profile)), ensure_ascii=False, indent=2))
+        print(json.dumps(_quality_snapshot(store, profile), ensure_ascii=False, indent=2))
         return 0
 
     if args.command == "stats":
@@ -343,14 +360,14 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.command == "doctor":
-        ok, checks = run_doctor(args.db, args.profile, args.sources)
+        ok, checks = run_doctor(args.db, args.profile, args.sources, args.profile_overlay)
         for check in checks:
             print(f"[{check['status'].upper()}] {check['check']}: {check['detail']}")
         return 0 if ok else 1
 
     if args.command == "demo":
         imported, updated = _import(store, args.sample)
-        count = _score(store, args.profile, all_notices=True)
+        count = _score(store, profile, all_notices=True)
         rows = store.ranked(limit=20, min_score=0)
         target = write_digest(args.output, rows)
         dashboard_target = write_dashboard(args.dashboard_output, rows, title="OpenBid Intel Demo")
@@ -410,8 +427,8 @@ def _print_collection(summary: dict) -> None:
     print(f"合计：读取 {summary['fetched']}，新增 {summary['imported']}，更新 {summary['updated']}，失败来源 {summary['failed_sources']}")
 
 
-def _score(store: Store, profile_path: str, all_notices: bool) -> int:
-    matcher = Matcher.from_file(profile_path)
+def _score(store: Store, profile: dict, all_notices: bool) -> int:
+    matcher = Matcher(profile)
     notices = store.all_notices() if all_notices else store.unscored_notices()
     for notice_id, notice in notices:
         store.save_score(notice_id, matcher.score(notice))
@@ -449,10 +466,9 @@ def _write_quality_report(path: Path, quality: dict, collection: dict) -> Path:
     return path
 
 
-def _run_intelligence(store: Store, args) -> int:
+def _run_intelligence(store: Store, args, profile: dict) -> int:
     collection = _collect(store, args.sources, not args.no_details, args.max_details, args.max_pages, args.history_days)
-    scored = _score(store, args.profile, all_notices=True)
-    profile = load_profile(args.profile)
+    scored = _score(store, profile, all_notices=True)
     output_dir = Path(args.output_dir); output_dir.mkdir(parents=True, exist_ok=True)
     stamp = datetime.now().astimezone().strftime("%Y%m%d")
     digest_rows = store.ranked(limit=args.limit, min_score=args.min_score)
