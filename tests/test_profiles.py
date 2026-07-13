@@ -14,6 +14,7 @@ def test_builtin_profiles_cover_popular_sectors():
     assert {
         "it-digital", "construction", "medical-lab", "marketing-services",
         "energy-sustainability", "education", "logistics", "facilities-management",
+        "professional-services",
     } <= ids
 
 
@@ -125,3 +126,55 @@ def test_facilities_profile_matches_distinct_opportunity_types(title, expected_l
     result = Matcher(load_builtin_profile("facilities-management")).score(notice)
     assert expected_line in result.business_lines
     assert result.score >= 30
+
+
+def test_professional_services_profile_is_broad_specific_and_neutral():
+    profile = load_builtin_profile("professional-services")
+    lines = profile["business_lines"]
+    assert {line["id"] for line in lines} == {
+        "management_strategy_advisory",
+        "finance_risk_assurance",
+        "legal_corporate_services",
+    }
+    assert profile["focus_regions"] == []
+    assert profile["min_budget_cny"] == 0
+    assert profile["sales_profile"]["priority_accounts"] == []
+    assert profile["sales_profile"]["focus_regions"] == []
+    terms = {
+        term.lower()
+        for line in lines
+        for key in ("strong_terms", "related_terms")
+        for term in line[key]
+    }
+    assert not ({"consulting", "audit", "legal", "services", "advisory"} & terms)
+
+
+@pytest.mark.parametrize(
+    ("title", "expected_line"),
+    [
+        ("Organizational transformation consulting tender", "Management, strategy, and operational advisory"),
+        ("Financial statement audit and tax advisory services", "Finance, audit, tax, risk, and assurance services"),
+        ("External legal counsel and intellectual property legal services", "Legal, intellectual-property, and corporate services"),
+        ("\u5168\u9762\u98ce\u9669\u7ba1\u7406\u54a8\u8be2\u91c7\u8d2d", "Finance, audit, tax, risk, and assurance services"),
+    ],
+)
+def test_professional_services_profile_matches_distinct_opportunity_types(title, expected_line):
+    notice = Notice(
+        title=title, url="https://example.invalid/tender", source="fixture",
+        published_at="2026-07-13", stage="tender notice", buyer="Example organization",
+    )
+    result = Matcher(load_builtin_profile("professional-services")).score(notice)
+    assert expected_line in result.business_lines
+    assert result.score >= 30
+
+
+def test_professional_services_profile_avoids_recruitment_noise():
+    notice = Notice(
+        title="Graduate recruitment for consultants and lawyers",
+        content="Job vacancy and campus recruitment announcement",
+        url="https://example.invalid/jobs", source="fixture",
+        published_at="2026-07-13", stage="tender notice", buyer="Example organization",
+    )
+    result = Matcher(load_builtin_profile("professional-services")).score(notice)
+    assert result.business_lines == []
+    assert result.score == 0

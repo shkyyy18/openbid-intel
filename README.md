@@ -80,6 +80,7 @@ The file works offline and can be opened in any modern browser. It includes full
 | `education` | Digital learning, teaching/lab equipment, campus services and infrastructure |
 | `logistics` | Transportation, warehousing, fulfillment, cold-chain, fleet technology and equipment |
 | `facilities-management` | Property/facility operations, cleaning, landscaping and building maintenance |
+| `professional-services` | Management advisory, audit, tax, risk, legal and corporate services |
 
 Create both ignored local configuration files in one step, or list and initialize only a profile pack:
 
