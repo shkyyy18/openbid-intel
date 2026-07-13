@@ -1,0 +1,23 @@
+name: Data source request
+description: Propose a lawful public tender source or import format
+title: "[Source] "
+body:
+  - type: input
+    id: source
+    attributes:
+      label: Source name and public page
+    validations:
+      required: true
+  - type: textarea
+    id: access
+    attributes:
+      label: Access and reuse constraints
+      description: Describe robots rules, terms, authentication, rate limits, and whether redistribution is allowed.
+    validations:
+      required: true
+  - type: textarea
+    id: sample
+    attributes:
+      label: Expected fields and a synthetic example
+    validations:
+      required: true

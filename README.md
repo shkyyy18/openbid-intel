@@ -7,11 +7,13 @@
 **Turn messy tender feeds into ranked opportunities for any industry - locally.**
 
 [![Tests](https://github.com/shkyyy18/openbid-intel/actions/workflows/tests.yml/badge.svg)](https://github.com/shkyyy18/openbid-intel/actions/workflows/tests.yml)
+[![Release](https://img.shields.io/github/v/release/shkyyy18/openbid-intel)](https://github.com/shkyyy18/openbid-intel/releases/latest)
+[![Contributors](https://img.shields.io/github/contributors/shkyyy18/openbid-intel)](https://github.com/shkyyy18/openbid-intel/graphs/contributors)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-3776AB)](https://www.python.org/)
 [![MIT License](https://img.shields.io/badge/license-MIT-22c55e)](LICENSE)
 [![Zero runtime dependencies](https://img.shields.io/badge/runtime_dependencies-0-8b5cf6)](pyproject.toml)
 
-[**Live demo**](https://shkyyy18.github.io/openbid-intel/) | [Quick start](#30-second-quick-start) | [Dashboard](#portable-html-dashboard) | [Industry packs](#built-in-industry-packs) | [Import your data](#import-from-any-export) | [Roadmap](ROADMAP.md)
+[**Live demo**](https://shkyyy18.github.io/openbid-intel/) | [Quick start](#30-second-quick-start) | [Dashboard](#portable-html-dashboard) | [Industry packs](#built-in-industry-packs) | [Good first issues](https://github.com/shkyyy18/openbid-intel/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) | [Roadmap](ROADMAP.md)
 
 </div>
 
