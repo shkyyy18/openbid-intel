@@ -154,6 +154,21 @@ class Store:
             result.append(item)
         return result
 
+    def calibration_rows(self) -> list[dict]:
+        """Return scored notices with only their latest feedback verdict; notes stay private."""
+        with self.connect() as connection:
+            rows = connection.execute(
+                """SELECT n.id notice_id, n.title, s.score, f.verdict
+                FROM notices n
+                JOIN scores s ON s.notice_id=n.id
+                JOIN feedback f ON f.id=(
+                    SELECT latest.id FROM feedback latest
+                    WHERE latest.notice_id=n.id ORDER BY latest.id DESC LIMIT 1
+                )
+                ORDER BY n.id"""
+            ).fetchall()
+        return [dict(row) for row in rows]
+
     def competitor_summary(self, limit: int = 30, buyer_query: str = "") -> list[dict]:
         where = "award_supplier <> ''"
         params: list[object] = []

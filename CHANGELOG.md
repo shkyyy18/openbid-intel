@@ -13,6 +13,7 @@ All notable changes to OpenBid Intel are documented here.
 - Repeatable `--profile-overlay` composition for layering ignored private sales rules onto public industry packs.
 - A synthetic partial-overlay example with deterministic merge, validation, and privacy guidance.
 - A neutral `professional-services` profile pack for management advisory, finance and assurance, legal, and corporate services.
+- `openbid calibrate` for latest-feedback-only confusion matrices, precision/recall/F1 metrics, score-band analysis, safe error examples, and deterministic threshold recommendations.
 
 ### Changed
 

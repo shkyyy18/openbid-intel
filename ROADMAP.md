@@ -8,7 +8,7 @@ OpenBid Intel favors reusable foundations and trustworthy integrations over a la
 - [ ] Publish a connector-output schema for external process adapters.
 - [x] Add a portable HTML dashboard generated from the local database.
 - [x] Export qualified opportunities to generic CRM-friendly CSV.
-- [ ] Add scoring calibration reports based on human feedback.
+- [x] Add scoring calibration reports based on human feedback.
 - [ ] Improve amount, deadline, buyer, and award-supplier extraction with fixture-backed parsers.
 
 ## Profile pack ecosystem

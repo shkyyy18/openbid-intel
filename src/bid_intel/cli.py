@@ -7,6 +7,12 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
+from .calibration import (
+    build_calibration_report,
+    render_calibration_json,
+    render_calibration_markdown,
+    write_calibration_report,
+)
 from .collectors import collect_sources
 from .config_validation import validate_config
 from .competitive import (
@@ -105,6 +111,11 @@ def build_parser() -> argparse.ArgumentParser:
     feedback.add_argument("notice_id", type=int)
     feedback.add_argument("verdict", choices=VERDICTS)
     feedback.add_argument("--note", default="")
+
+    calibrate = sub.add_parser("calibrate", help="evaluate score thresholds against the latest human feedback")
+    calibrate.add_argument("--threshold", type=_score_threshold, default=50, help="score cutoff to evaluate (0-100)")
+    calibrate.add_argument("--output", help="write the report to a Markdown or JSON file")
+    calibrate.add_argument("--json", action="store_true", help="emit stable machine-readable JSON")
 
     competitors = sub.add_parser("competitors", help="\u751f\u6210\u5386\u53f2\u4e2d\u6807\u4f9b\u5e94\u5546\u4e0e\u7ade\u4e89\u60c5\u62a5\u62a5\u544a")
     competitors.add_argument("--buyer", default="", help="\u6309\u91c7\u8d2d\u5355\u4f4d\u5173\u952e\u8bcd\u7b5b\u9009")
@@ -330,6 +341,16 @@ def main(argv: list[str] | None = None) -> int:
         print(f"已记录公告 {args.notice_id}：{args.verdict}")
         return 0
 
+    if args.command == "calibrate":
+        report = build_calibration_report(store.calibration_rows(), args.threshold)
+        if args.output:
+            target = write_calibration_report(args.output, report, json_output=args.json)
+            print(f"Calibration report generated: {target}")
+        else:
+            renderer = render_calibration_json if args.json else render_calibration_markdown
+            print(renderer(report), end="")
+        return 0
+
     if args.command == "competitors":
         buyer_label, buyer_aliases = resolve_buyer_aliases(profile, args.buyer)
         raw_history = store.award_history(limit=args.history_limit, buyer_queries=buyer_aliases)
@@ -375,6 +396,16 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     return 2
+
+
+def _score_threshold(value: str) -> int:
+    try:
+        threshold = int(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError("threshold must be an integer between 0 and 100") from exc
+    if not 0 <= threshold <= 100:
+        raise argparse.ArgumentTypeError("threshold must be between 0 and 100")
+    return threshold
 
 
 def _import(store: Store, path: str, mapping_path: str | None = None) -> tuple[int, int]:

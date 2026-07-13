@@ -182,13 +182,24 @@ Amount parsing handles values such as `$1.25 million`, `1.2 billion`, `CNY 1.25 
 | Export qualified opportunities | `openbid export --min-score 50` | CRM-friendly Excel CSV |
 | Run a daily pipeline | `openbid daily --no-push` | Collection, scoring, dated digest |
 | Record sales feedback | `openbid feedback 42 VERDICT --note "owner assigned"` | Auditable human decision |
+| Calibrate score thresholds | `openbid calibrate --threshold 50` | Feedback-based precision, recall, F1, and error review |
 | Analyze award suppliers | `openbid competitors` | Supplier ranking and buyer history |
 | Build an intelligence bundle | `openbid intelligence --no-push` | Digest, account, supplier and quality reports |
 | Verify an install or release | `openbid release-check` | Fully offline checks |
 
 The CSV export uses UTF-8 with a BOM (`utf-8-sig`) so current Excel versions detect non-ASCII text without an import wizard. It contains only stable notice IDs, opportunity fields, score, matched business lines, URL, and latest verdict. Notice content, raw payloads, webhook secrets, and internal feedback notes are excluded by default.
 
-Feedback verdicts currently use Chinese labels. Run `openbid feedback --help` to see the accepted values.
+Feedback verdicts currently use Chinese labels. Run `openbid feedback --help` to see the accepted values. Calibration uses only the latest verdict for each scored notice: relevant workflow outcomes such as `相关`, `已跟进`, `已投标`, `中标`, and `失标` are positive labels; `不相关` is negative; and `放弃` is ignored because it may reflect eligibility or commercial constraints rather than relevance. Internal feedback notes are never included in calibration reports.
+
+Generate a human-readable or machine-readable calibration report:
+
+```bash
+openbid calibrate --threshold 50
+openbid calibrate --threshold 50 --json
+openbid calibrate --threshold 50 --output reports/calibration.md
+```
+
+The recommended threshold is a deterministic, descriptive best-F1 result from the labels currently available. It never changes a profile automatically, and small or single-class samples should be treated as preliminary.
 
 ## How it works
 

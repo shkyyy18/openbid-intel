@@ -21,6 +21,21 @@ Reports are written under `reports/`. Remove `--no-push` after a valid Feishu we
 
 Review every selected opportunity against the official notice and attachments. In particular, verify the amount, deadline, buyer identity, technical scope, eligibility terms, and current notice stage. Record the sales decision with the `feedback` command.
 
+## Feedback and score calibration
+
+Record decisions consistently, then compare the current cutoff with the latest verdict for each scored notice:
+
+```powershell
+.\bid-intel.cmd feedback 42 相关
+.\bid-intel.cmd feedback 57 不相关
+.\bid-intel.cmd calibrate --threshold 50
+.\bid-intel.cmd calibrate --threshold 50 --json --output reports/calibration.json
+```
+
+The report includes the confusion matrix, precision, recall, specificity, F1, accuracy, score-band positive rates, and false-positive/false-negative examples. It recommends a threshold by maximizing F1, then precision, recall, and the higher threshold. This recommendation is descriptive only and never edits a profile.
+
+Only the latest feedback verdict per notice is used. Relevant workflow outcomes, including `失标`, count as positive relevance evidence; `不相关` is negative; and `放弃` is ignored as ambiguous. Feedback notes are never selected for the report. Treat results based on fewer than 20 comparable labels or a single label class as preliminary.
+
 ## Weekly history and competitive intelligence
 
 ```powershell
