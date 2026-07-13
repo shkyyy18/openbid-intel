@@ -9,6 +9,7 @@ OpenBid Intel favors reusable foundations and trustworthy integrations over a la
 - [x] Add a portable HTML dashboard generated from the local database.
 - [x] Export qualified opportunities to generic CRM-friendly CSV.
 - [x] Add scoring calibration reports based on human feedback.
+- [x] Multi-profile scoring and deterministic opportunity routing for agencies and multi-product teams.
 - [ ] Improve amount, deadline, buyer, and award-supplier extraction with fixture-backed parsers.
 
 ## Profile pack ecosystem
@@ -32,7 +33,6 @@ OpenBid Intel favors reusable foundations and trustworthy integrations over a la
 
 ## Later
 
-- [ ] Multi-profile scoring for agencies and multi-product teams.
 - [ ] Optional local LLM enrichment behind a deterministic baseline.
 - [ ] Relationship graph export.
 - [ ] Containerized scheduled deployment.

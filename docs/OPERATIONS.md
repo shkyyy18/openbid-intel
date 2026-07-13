@@ -36,6 +36,20 @@ The report includes the confusion matrix, precision, recall, specificity, F1, ac
 
 Only the latest feedback verdict per notice is used. Relevant workflow outcomes, including `失标`, count as positive relevance evidence; `不相关` is negative; and `放弃` is ignored as ambiguous. Feedback notes are never selected for the report. Treat results based on fewer than 20 comparable labels or a single label class as preliminary.
 
+## Multi-profile routing
+
+Use routing when one database serves several industries, product portfolios, or sales teams:
+
+```powershell
+.\bid-intel.cmd route --min-score 40 --output reports/routing.md
+.\bid-intel.cmd route --profile-id education --profile-id it-digital --json
+.\bid-intel.cmd route --profile-path config/custom-profile.json --top-profiles 3
+```
+
+Without `--profile-id` or `--profile-path`, all bundled profiles are evaluated. Each notice is assigned to the highest-scoring profile; ties use the lexicographically smaller profile ID. The command is read-only and does not modify the normal `scores` table. Profile assignment counts reflect the routes returned after `--limit`, while matched and unmatched totals describe the full evaluated database.
+
+Custom paths must contain complete, valid profiles with unique `meta.id` values. Routing output excludes raw payloads, full notice content, feedback notes, and profile paths. Review assignments as triage suggestions and verify the official notice before handing work to a team.
+
 ## Weekly history and competitive intelligence
 
 ```powershell

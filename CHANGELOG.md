@@ -14,6 +14,7 @@ All notable changes to OpenBid Intel are documented here.
 - A synthetic partial-overlay example with deterministic merge, validation, and privacy guidance.
 - A neutral `professional-services` profile pack for management advisory, finance and assurance, legal, and corporate services.
 - `openbid calibrate` for latest-feedback-only confusion matrices, precision/recall/F1 metrics, score-band analysis, safe error examples, and deterministic threshold recommendations.
+- `openbid route` for read-only multi-profile opportunity assignment across bundled or custom profiles, with deterministic alternatives and safe Markdown/JSON reports.
 
 ### Changed
 

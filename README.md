@@ -28,7 +28,7 @@ Public procurement data is fragmented across portals, spreadsheets, subscription
 ## Why this project exists
 
 - **Useful across industries:** the engine is not tied to one company, region, portal, or product category.
-- **Fast first result:** eight built-in profile packs cover common procurement markets.
+- **Fast first result:** nine built-in profile packs cover common procurement markets.
 - **Bring almost any export:** JSON, JSONL, and CSV imports support common English and Chinese field aliases plus custom mappings.
 - **Explainable ranking:** every score includes matched reasons, risks, and recommended next actions.
 - **Portable visual dashboard:** generate one self-contained HTML file with search and filters; no server required.
@@ -183,6 +183,7 @@ Amount parsing handles values such as `$1.25 million`, `1.2 billion`, `CNY 1.25 
 | Run a daily pipeline | `openbid daily --no-push` | Collection, scoring, dated digest |
 | Record sales feedback | `openbid feedback 42 VERDICT --note "owner assigned"` | Auditable human decision |
 | Calibrate score thresholds | `openbid calibrate --threshold 50` | Feedback-based precision, recall, F1, and error review |
+| Route across profiles | `openbid route --min-score 40` | Best-fit industry or product-team assignment with alternatives |
 | Analyze award suppliers | `openbid competitors` | Supplier ranking and buyer history |
 | Build an intelligence bundle | `openbid intelligence --no-push` | Digest, account, supplier and quality reports |
 | Verify an install or release | `openbid release-check` | Fully offline checks |
@@ -200,6 +201,21 @@ openbid calibrate --threshold 50 --output reports/calibration.md
 ```
 
 The recommended threshold is a deterministic, descriptive best-F1 result from the labels currently available. It never changes a profile automatically, and small or single-class samples should be treated as preliminary.
+
+## Multi-profile opportunity routing
+
+A shared procurement feed often serves several industries, product portfolios, or sales teams. Route every stored notice against all bundled profiles without overwriting the active single-profile scores:
+
+```bash
+openbid route --min-score 40
+openbid route --min-score 40 --json
+openbid route --profile-id education --profile-id it-digital
+openbid route --profile-path config/custom-profile.json --output reports/routing.md
+```
+
+With no profile selector, `route` evaluates every bundled industry pack. The highest score becomes the deterministic assignment, ties are resolved by profile ID, and `--top-profiles` retains bounded alternatives for cross-sell or review. Custom profile files are schema-validated, duplicate profile IDs are rejected, and routing remains read-only: it does not replace scores used by the normal digest or dashboard.
+
+Routing reports expose only selected notice fields and score explanations. Raw imported payloads, notice content, feedback notes, profile file paths, and database internals are not included.
 
 ## How it works
 

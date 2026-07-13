@@ -28,8 +28,20 @@ from .matcher import Matcher
 from .models import Notice, parse_datetime
 from .notifier import load_dotenv, render_feishu_digest, send_feishu_text
 from .onboarding import choose_profile, initialize
-from .profiles import ProfileConfigError, list_profiles, load_composed_profile, write_profile
+from .profiles import (
+    ProfileConfigError,
+    list_profiles,
+    load_builtin_profile,
+    load_composed_profile,
+    write_profile,
+)
 from .report import render_digest, write_digest
+from .routing import (
+    build_routing_report,
+    render_routing_json,
+    render_routing_markdown,
+    write_routing_report,
+)
 from .release import run_release_check
 from .storage import Store
 
@@ -116,6 +128,27 @@ def build_parser() -> argparse.ArgumentParser:
     calibrate.add_argument("--threshold", type=_score_threshold, default=50, help="score cutoff to evaluate (0-100)")
     calibrate.add_argument("--output", help="write the report to a Markdown or JSON file")
     calibrate.add_argument("--json", action="store_true", help="emit stable machine-readable JSON")
+
+    route = sub.add_parser(
+        "route", help="route stored notices to the best-matching industry or product profile"
+    )
+    route.add_argument(
+        "--profile-id", action="append", default=[],
+        help="bundled profile ID; repeat to select several",
+    )
+    route.add_argument(
+        "--profile-path", action="append", default=[],
+        help="validated custom profile JSON; repeat to add several",
+    )
+    route.add_argument(
+        "--min-score", type=_score_threshold, default=30,
+        help="minimum winning profile score (0-100)",
+    )
+    route.add_argument("--limit", type=_positive_integer, default=100, help="maximum routed notices to return")
+    route.add_argument("--top-profiles", type=_positive_integer, default=3, help="profile matches retained per notice")
+    route.add_argument("--as-of", help="ISO date/time used for deterministic recency and deadline scoring")
+    route.add_argument("--output", help="write the report to a Markdown or JSON file")
+    route.add_argument("--json", action="store_true", help="emit stable machine-readable JSON")
 
     competitors = sub.add_parser("competitors", help="\u751f\u6210\u5386\u53f2\u4e2d\u6807\u4f9b\u5e94\u5546\u4e0e\u7ade\u4e89\u60c5\u62a5\u62a5\u544a")
     competitors.add_argument("--buyer", default="", help="\u6309\u91c7\u8d2d\u5355\u4f4d\u5173\u952e\u8bcd\u7b5b\u9009")
@@ -351,6 +384,31 @@ def main(argv: list[str] | None = None) -> int:
             print(renderer(report), end="")
         return 0
 
+    if args.command == "route":
+        if args.as_of and parse_datetime(args.as_of) is None:
+            print("error: --as-of must be an ISO date or date-time", file=sys.stderr)
+            return 2
+        try:
+            route_profiles = _load_routing_profiles(args.profile_id, args.profile_path)
+            report = build_routing_report(
+                store.all_notices(),
+                route_profiles,
+                min_score=args.min_score,
+                limit=args.limit,
+                top_profiles=args.top_profiles,
+                as_of=parse_datetime(args.as_of),
+            )
+        except (ProfileConfigError, ValueError) as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            return 2
+        if args.output:
+            target = write_routing_report(args.output, report, json_output=args.json)
+            print(f"Routing report generated: {target} ({report['returned_notice_count']} routes)")
+        else:
+            renderer = render_routing_json if args.json else render_routing_markdown
+            print(renderer(report), end="")
+        return 0
+
     if args.command == "competitors":
         buyer_label, buyer_aliases = resolve_buyer_aliases(profile, args.buyer)
         raw_history = store.award_history(limit=args.history_limit, buyer_queries=buyer_aliases)
@@ -406,6 +464,25 @@ def _score_threshold(value: str) -> int:
     if not 0 <= threshold <= 100:
         raise argparse.ArgumentTypeError("threshold must be between 0 and 100")
     return threshold
+
+
+def _positive_integer(value: str) -> int:
+    try:
+        result = int(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError("value must be a positive integer") from exc
+    if result < 1:
+        raise argparse.ArgumentTypeError("value must be at least 1")
+    return result
+
+
+def _load_routing_profiles(profile_ids: list[str], profile_paths: list[str]) -> list[dict]:
+    selected_ids = profile_ids
+    if not selected_ids and not profile_paths:
+        selected_ids = [row["id"] for row in list_profiles()]
+    profiles = [load_builtin_profile(profile_id) for profile_id in selected_ids]
+    profiles.extend(load_composed_profile(path) for path in profile_paths)
+    return profiles
 
 
 def _import(store: Store, path: str, mapping_path: str | None = None) -> tuple[int, int]:

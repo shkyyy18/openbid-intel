@@ -28,6 +28,8 @@ REQUIRED_PATHS = (
     "src/bid_intel/onboarding.py",
     "src/bid_intel/calibration.py",
     "tests/test_calibration.py",
+    "src/bid_intel/routing.py",
+    "tests/test_routing.py",
     "schemas/profile.schema.json",
     "schemas/sources.schema.json",
     "src/bid_intel/feed_connector.py",
