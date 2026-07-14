@@ -60,6 +60,12 @@ openbid --profile config/profile.local.json --sources config/sources.local.json 
 
 Windows users can also run `bid-intel.cmd demo` without changing the PowerShell execution policy.
 
+## See the complete triage loop
+
+The [end-to-end synthetic case study](docs/END_TO_END_CASE_STUDY.md) shows a reproducible six-notice evaluation: two IT opportunities score 100, while four unrelated notices score between 12 and 18. It explains what the system automates, what remains a human decision, and how to adapt the workflow to one industry without publishing private data.
+
+Use the [ten-minute validation checklist](docs/END_TO_END_CASE_STUDY.md#ten-minute-validation-checklist) before adding a live source. If you are evaluating OpenBid Intel for a real workflow, the [five-question user validation guide](docs/USER_VALIDATION.md) captures the minimum information needed for a useful next step.
+
 ## Portable HTML dashboard
 
 Generate a polished, self-contained dashboard directly from the local SQLite database:
@@ -318,7 +324,7 @@ The easiest ways to extend OpenBid Intel are intentionally modular:
 - improve profile schema validation;
 - improve the portable HTML dashboard or add a CRM-friendly export.
 
-Read [CONTRIBUTING.md](CONTRIBUTING.md), open a Discussion for source-compliance questions, and never submit private customer data or live credentials.
+Browse the [open good-first-issue queue](https://github.com/shkyyy18/openbid-intel/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22), read [CONTRIBUTING.md](CONTRIBUTING.md), and open a Discussion for industry validation or source-compliance questions. Never submit private customer data or live credentials.
 
 ## Project status
 
