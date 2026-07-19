@@ -45,18 +45,58 @@ Requires Python 3.11 or newer.
 ```bash
 git clone https://github.com/shkyyy18/openbid-intel.git
 cd openbid-intel
-python run.py demo
+python -m pip install -e .
+openbid demo
 ```
 
-The cross-industry demo imports six synthetic notices and ranks the IT, data, AI, and cybersecurity opportunities using the default `it-digital` profile. It writes both `reports/demo_digest.md` and the interactive `reports/demo_dashboard.html`.
+The cross-industry demo imports six synthetic notices and ranks the IT, data, AI, and cybersecurity opportunities using the default `it-digital` profile. It writes both `reports/demo_digest.md` and the interactive `reports/demo_dashboard.html`. To run without installing, use `PYTHONPATH=src python run.py demo` (`$env:PYTHONPATH="src"` in PowerShell).
 
-Install the CLI locally:
+Create a private local configuration and try it with another industry pack:
 
 ```bash
-python -m pip install -e .
 openbid init education --source-template rss
 openbid --profile config/profile.local.json --sources config/sources.local.json demo
 ```
+
+## Verified demo output
+
+The following outputs were captured from real runs of the commands above (Python 3.14, Windows; captured 2026-07-20). Scores that depend on the run date may drift slightly over time.
+
+`openbid demo`:
+
+```text
+Demo complete: 6 new, 0 updated, 6 scored; digest reports\demo_digest.md; dashboard reports\demo_dashboard.html
+```
+
+Section headings of the generated `reports/demo_digest.md` - two IT opportunities rank at the cap while four unrelated notices are filtered to low relevance:
+
+```text
+## 1. [重点 100/100] City data platform and AI knowledge assistant RFP
+## 2. [重点 100/100] University cybersecurity operations center procurement
+## 3. [低相关 15/100] Public building renovation and HVAC upgrade
+## 4. [低相关 14/100] Hospital diagnostic imaging equipment purchase
+## 5. [低相关 11/100] Solar and battery storage microgrid project
+## 6. [低相关 9/100] Office cafeteria operation service
+```
+
+`openbid explain --title "City data platform and AI knowledge assistant RFP" --buyer "Example City Digital Services Department" --stage "request for proposal" --region "Example Region" --budget-cny 4200000 --published-at 2026-07-12 --deadline-at 2026-08-15 --as-of 2026-07-13` (fully deterministic thanks to `--as-of`):
+
+```text
+Score: 57 (关注)
+Business lines: Data, AI and cloud
+
+Score contributions:
+  +40  business_line: Data, AI and cloud - strong: data platform
+  +3  buyer: Buyer-category terms - department
+  +5  stage: request for proposal
+  +2  procurement: Procurement language - request for proposal, rfp
+  +0  region: Focus-region match - No configured focus region matched
+  +2  budget: Known budget - CNY 4,200,000
+  +5  recency: Publication recency - Published 1.0 days ago
+  +0  deadline: Deadline window - 33.0 days remaining
+```
+
+The test suite (`python -m pytest tests -q`) reports `104 passed`.
 
 Windows users can also run `bid-intel.cmd demo` without changing the PowerShell execution policy.
 
